@@ -56,7 +56,7 @@ export class ScheduleComponent implements OnInit {
     const normalizedType = this.type.trim().toLowerCase();
 
     if (normalizedType === 'vibe check') {
-      return "Let's have a brief call to talk about what you're looking to achieve and whether or not I'm the right person to guide you.";
+      return "Let's chat!  It's already written in the stars that we would meet.  Pick your time and fulfill the prophesy. ★";
     }
 
     return 'Choose a session type to see the scheduling details.';
