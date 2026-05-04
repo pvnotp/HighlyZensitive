@@ -1,8 +1,9 @@
 @use '../../../global-styles.scss' as *;
+@use '../../../style-variables.scss' as vars;
 
 .home-container {
   position: relative;
-  min-height: 100dvh;
+  flex: 1;
   overflow: hidden;
 }
 

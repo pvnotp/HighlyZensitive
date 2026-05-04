@@ -1,6 +1,8 @@
+@use '../../../style-variables.scss' as vars;
+
 .about-container {
   position: relative;
-  min-height: 100dvh;
+  flex: 1;
   overflow: hidden;
   display: flex;
   align-items: center;
