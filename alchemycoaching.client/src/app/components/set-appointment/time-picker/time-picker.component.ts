@@ -86,11 +86,20 @@ export class TimePickerComponent implements OnChanges {
 
   private buildSlots(date: Date, events: CalendarEvent[]): TimeSlot[] {
     const slots: TimeSlot[] = [];
+    const now = new Date();
+    const cutoff = new Date(now.getTime() + 6 * 60 * 60 * 1000);
+    const isToday = date.toDateString() === now.toDateString();
+    const isCutoffDay = date.toDateString() === cutoff.toDateString();
 
     for (let hour = this.START_HOUR; hour < this.END_HOUR; hour++) {
       for (let minute = 0; minute < 60; minute += 15) {
         const slotStart = new Date(date);
         slotStart.setHours(hour, minute, 0, 0);
+
+        // Skip slots within 6 hours from now
+        if ((isToday || isCutoffDay) && slotStart <= cutoff) {
+          continue;
+        }
 
         const slotEnd = new Date(slotStart);
         slotEnd.setMinutes(slotEnd.getMinutes() + 15);
@@ -122,5 +131,19 @@ export class TimePickerComponent implements OnChanges {
 
   get selectedSlot(): TimeSlot | null {
     return this.slots.find((slot) => this.getSlotKey(slot) === this.selectedSlotKey) ?? null;
+  }
+
+  get noTimesAvailable(): boolean {
+    if (!this.selectedDate) return false;
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const dateOnly = new Date(this.selectedDate);
+    dateOnly.setHours(0, 0, 0, 0);
+    if (dateOnly < today) return true;
+    // Check if all slots on this day fall within the 6-hour cutoff
+    const cutoff = new Date(Date.now() + 6 * 60 * 60 * 1000);
+    const lastSlot = new Date(this.selectedDate);
+    lastSlot.setHours(this.END_HOUR - 1, 45, 0, 0);
+    return lastSlot <= cutoff;
   }
 }

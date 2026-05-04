@@ -1,5 +1,9 @@
 <section class="time-shell">
-	<div class="time-scroll" role="grid" aria-label="Available times">
+	<ng-container *ngIf="noTimesAvailable">
+		<div class="state-message default-font">No times available</div>
+	</ng-container>
+
+	<div class="time-scroll" role="grid" aria-label="Available times" *ngIf="!noTimesAvailable">
 
 		<ng-container *ngIf="isLoading">
 			<div class="state-message default-font">Loading availability…</div>
