@@ -18,7 +18,12 @@ export class ScheduleComponent implements OnInit {
 
   type = '';
   duration = '';
-  selectedDate = (() => { const d = new Date(); d.setHours(0, 0, 0, 0); return d; })();
+  selectedDate = (() => {
+    const d = new Date();
+    d.setHours(0, 0, 0, 0);
+    d.setDate(d.getDate() + 1);
+    return d;
+  })();
   selectedSlot: TimeSlot | null = null;
   isDialogOpen = false;
 

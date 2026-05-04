@@ -11,10 +11,15 @@ import { CommonModule } from '@angular/common';
 export class DatePickerComponent {
   readonly weekdayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
   readonly today = this.atMidnight(new Date());
+  readonly tomorrow = (() => {
+    const date = new Date(this.today);
+    date.setDate(date.getDate() + 1);
+    return date;
+  })();
   readonly weeks = this.buildNextSixWeeks();
   readonly rangeLabel = this.buildRangeLabel();
 
-  selectedDate = this.today;
+  selectedDate = this.tomorrow;
 
   @Output() readonly dateSelected = new EventEmitter<Date>();
 
