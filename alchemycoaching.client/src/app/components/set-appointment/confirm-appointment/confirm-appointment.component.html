@@ -1,4 +1,4 @@
-<ng-container *ngIf="isOpen">
+@if (isOpen) {
   <div class="appointment-dialog-backdrop" (click)="requestClose()"></div>
 
   <section
@@ -24,6 +24,7 @@
         id="appointment-name"
         type="text"
         [(ngModel)]="formValue.name"
+        (ngModelChange)="onFormFieldChanged()"
         maxlength="100"
       />
     </div>
@@ -34,6 +35,7 @@
         id="appointment-phone"
         type="tel"
         [(ngModel)]="formValue.phone"
+        (ngModelChange)="onFormFieldChanged()"
         maxlength="30"
       />
     </div>
@@ -48,7 +50,9 @@
       ></textarea>
     </div>
 
-    <p *ngIf="submitError" class="appointment-error">{{ submitError }}</p>
+    @if (submitError) {
+      <p class="appointment-error">{{ submitError }}</p>
+    }
 
     <footer class="appointment-dialog-actions">
       <button type="button" class="dialog-secondary-button" (click)="requestClose()" [disabled]="isSubmitting">
@@ -59,4 +63,4 @@
       </button>
     </footer>
   </section>
-</ng-container>
+}

@@ -29,18 +29,21 @@ export class TimePickerComponent implements OnChanges {
   slots: TimeSlot[] = [];
   isLoading = false;
   hasError = false;
-  selectedSlotKey: string | null = null;
+  selectedSlot: TimeSlot | null = null;
+  noTimesAvailable = false;
 
   onSlotSelected(slot: TimeSlot): void {
     if (slot.isBooked) {
       return;
     }
 
-    this.selectedSlotKey = this.getSlotKey(slot);
+    this.selectedSlot = slot;
   }
 
   isSelected(slot: TimeSlot): boolean {
-    return this.selectedSlotKey === this.getSlotKey(slot);
+    return !!this.selectedSlot
+      && this.selectedSlot.hour === slot.hour
+      && this.selectedSlot.minute === slot.minute;
   }
 
   confirmSelection(event: Event): void {
@@ -54,15 +57,19 @@ export class TimePickerComponent implements OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['selectedDate'] && this.selectedDate) {
-      this.loadEvents(this.selectedDate);
+    if (changes['selectedDate']) {
+      this.noTimesAvailable = this.computeNoTimesAvailable(this.selectedDate);
+
+      if (this.selectedDate) {
+        this.loadEvents(this.selectedDate);
+      }
     }
   }
 
   private loadEvents(date: Date): void {
     this.isLoading = true;
     this.hasError = false;
-    this.selectedSlotKey = null;
+    this.selectedSlot = null;
 
     this.calendarService.getEventsForDay(date).subscribe({
       next: (events) => {
@@ -125,24 +132,17 @@ export class TimePickerComponent implements OnChanges {
     return slots;
   }
 
-  private getSlotKey(slot: TimeSlot): string {
-    return `${slot.hour}-${slot.minute}`;
-  }
-
-  get selectedSlot(): TimeSlot | null {
-    return this.slots.find((slot) => this.getSlotKey(slot) === this.selectedSlotKey) ?? null;
-  }
-
-  get noTimesAvailable(): boolean {
-    if (!this.selectedDate) return false;
+  private computeNoTimesAvailable(date: Date | null): boolean {
+    if (!date) return false;
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-    const dateOnly = new Date(this.selectedDate);
+    const dateOnly = new Date(date);
     dateOnly.setHours(0, 0, 0, 0);
     if (dateOnly < today) return true;
+
     // Check if all slots on this day fall within the 6-hour cutoff
     const cutoff = new Date(Date.now() + 6 * 60 * 60 * 1000);
-    const lastSlot = new Date(this.selectedDate);
+    const lastSlot = new Date(date);
     lastSlot.setHours(this.END_HOUR - 1, 45, 0, 0);
     return lastSlot <= cutoff;
   }

@@ -16,7 +16,7 @@
   position: absolute;
   inset: 0;
   z-index: 1;
-  background-image: url('./schedule-background.jpg');
+  background-image: url('./scheduler-background.jpg');
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
@@ -69,12 +69,12 @@
 }
 
 .panel-card {
-  background-color: rgba(255, 255, 255, 0.7);
+  background-color: vars.$surface-overlay;
   color: #000;
   box-sizing: border-box;
   margin: 0;
   padding: clamp(1rem, 2vw, 1.5rem);
-  border-radius: 4px;
+  border-radius: vars.$radius-sm;
 }
 
 .calendar-panel {

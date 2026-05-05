@@ -1,19 +1,22 @@
 <section class="calendar-shell">
   <div class="calendar-grid" role="grid" aria-label="Calendar for the next six weeks">
-    <div class="weekday default-font" *ngFor="let dayName of weekdayNames">{{ dayName }}</div>
+    @for (dayName of weekdayNames; track dayName) {
+      <div class="weekday default-font">{{ dayName }}</div>
+    }
 
-    <ng-container *ngFor="let week of weeks">
-      <button
-        class="day-cell default-font"
-        type="button"
-        *ngFor="let day of week"
-        [class.selected]="isSelected(day)"
-        [class.other-month]="isOutsideCurrentMonth(day)"
-        [attr.aria-label]="day | date : 'fullDate'"
-        [attr.aria-pressed]="isSelected(day)"
-        (click)="selectDate(day)">
-        <span class="day-number">{{ day | date : 'd' }}</span>
-      </button>
-    </ng-container>
+    @for (week of weeks; track $index) {
+      @for (day of week; track day.getTime()) {
+        <button
+          class="day-cell default-font"
+          type="button"
+          [class.selected]="isSelected(day)"
+          [class.other-month]="isOutsideCurrentMonth(day)"
+          [attr.aria-label]="day | date : 'fullDate'"
+          [attr.aria-pressed]="isSelected(day)"
+          (click)="selectDate(day)">
+          <span class="day-number">{{ day | date : 'd' }}</span>
+        </button>
+      }
+    }
   </div>
 </section>

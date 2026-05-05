@@ -3,21 +3,25 @@ import { ActivatedRoute } from '@angular/router';
 import { ConfirmAppointmentComponent } from '../confirm-appointment/confirm-appointment.component';
 import { DatePickerComponent } from '../date-picker/date-picker.component';
 import { TimePickerComponent, TimeSlot } from '../time-picker/time-picker.component';
+import { SetAppointmentUtils } from '../set-appointment-utils';
 
 @Component({
-  selector: 'app-schedule',
+  selector: 'app-scheduler',
   standalone: true,
   imports: [DatePickerComponent, TimePickerComponent, ConfirmAppointmentComponent],
-  templateUrl: './schedule.component.html',
-  styleUrl: './schedule.component.scss'
+  templateUrl: './scheduler.component.html',
+  styleUrl: './scheduler.component.scss'
 })
-export class ScheduleComponent implements OnInit {
+export class SchedulerComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
 
   @ViewChild(TimePickerComponent) private readonly timePicker?: TimePickerComponent;
 
   type = '';
   duration = '';
+  isVibeCheck = false;
+  titleText = 'Schedule a session';
+  contentText = 'Choose a session type to see the scheduling details.';
   selectedDate = (() => {
     const d = new Date();
     d.setHours(0, 0, 0, 0);
@@ -47,30 +51,15 @@ export class ScheduleComponent implements OnInit {
     this.timePicker?.refreshAvailability();
   }
 
-  get titleText(): string {
-    const normalizedType = this.type.trim().toLowerCase();
-
-    if (normalizedType === 'vibe check') {
-      return 'Get a vibe check';
-    }
-
-    return 'Schedule a session';
-  }
-
-  get contentText(): string {
-    const normalizedType = this.type.trim().toLowerCase();
-
-    if (normalizedType === 'vibe check') {
-      return "Let's chat!  It's already written in the stars that we would meet.  Pick your time and fulfill the prophesy. ★";
-    }
-
-    return 'Choose a session type to see the scheduling details.';
-  }
-
   ngOnInit(): void {
     this.route.queryParamMap.subscribe((params) => {
       this.type = params.get('type') ?? '';
       this.duration = params.get('duration') ?? '';
+      this.isVibeCheck = SetAppointmentUtils.isVibeCheck(this.type);
+      this.titleText = this.isVibeCheck ? 'Get a vibe check' : 'Schedule a session';
+      this.contentText = this.isVibeCheck
+        ? "Let's chat!  It's already written in the stars that we would meet.  Pick your time and fulfill the prophesy. ★"
+        : 'Choose a session type to see the scheduling details.';
     });
   }
 }

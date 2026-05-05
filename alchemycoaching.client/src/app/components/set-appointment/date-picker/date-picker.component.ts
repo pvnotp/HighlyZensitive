@@ -17,7 +17,6 @@ export class DatePickerComponent {
     return date;
   })();
   readonly weeks = this.buildNextSixWeeks();
-  readonly rangeLabel = this.buildRangeLabel();
 
   selectedDate = this.tomorrow;
 
@@ -38,21 +37,6 @@ export class DatePickerComponent {
     }
 
     return weeks;
-  }
-
-  private buildRangeLabel(): string {
-    const firstDay = this.weeks[0][0];
-    const lastDay = this.weeks[this.weeks.length - 1][6];
-
-    const firstMonth = firstDay.toLocaleString(undefined, { month: 'long' });
-    const lastMonth = lastDay.toLocaleString(undefined, { month: 'long' });
-    const lastYear = lastDay.getFullYear();
-
-    if (firstDay.getMonth() === lastDay.getMonth()) {
-      return `${firstMonth} ${lastYear}`;
-    }
-
-    return `${firstMonth} - ${lastMonth} ${lastYear}`;
   }
 
   selectDate(date: Date): void {

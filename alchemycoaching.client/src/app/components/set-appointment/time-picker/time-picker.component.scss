@@ -3,8 +3,8 @@
 .time-shell {
 	width: 100%;
 	height: clamp(18.75rem, 31vw, 20.75rem);
-	border-radius: 4px;
-	background: rgba(255, 255, 255, 0.7);
+	border-radius: vars.$radius-sm;
+	background: vars.$surface-overlay;
 	overflow: hidden;
 }
 

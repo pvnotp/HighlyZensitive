@@ -1,44 +1,49 @@
 <section class="time-shell">
-	<ng-container *ngIf="noTimesAvailable">
+	@if (noTimesAvailable) {
 		<div class="state-message default-font">No times available</div>
-	</ng-container>
+	}
 
-	<div class="time-scroll" role="grid" aria-label="Available times" *ngIf="!noTimesAvailable">
+	@if (!noTimesAvailable) {
+		<div class="time-scroll" role="grid" aria-label="Available times">
 
-		<ng-container *ngIf="isLoading">
+			@if (isLoading) {
 			<div class="state-message default-font">Loading availability…</div>
-		</ng-container>
+			}
 
-		<ng-container *ngIf="hasError">
+			@if (hasError) {
 			<div class="state-message default-font">Could not load availability. Please try again.</div>
-		</ng-container>
+			}
 
-		<ng-container *ngIf="!isLoading && !hasError">
-			<div
-				*ngFor="let slot of slots"
-				class="slot default-font"
-				[class.hour-mark]="slot.isHourMark"
-				[class.booked]="slot.isBooked"
-				[class.selected]="isSelected(slot)"
-				role="row"
-				[attr.aria-label]="slot.label + (slot.isBooked ? ' unavailable' : (isSelected(slot) ? ' selected' : ' available'))"
-				(click)="onSlotSelected(slot)"
-			>
-				<span class="slot-label">{{ slot.label }}</span>
-				<div class="slot-center" *ngIf="isSelected(slot)">
-					<span class="slot-confirm-text">Confirm time?</span>
-					<button
-						type="button"
-						class="confirm-button"
-						aria-label="Confirm selected time"
-						(click)="confirmSelection($event)"
+			@if (!isLoading && !hasError) {
+				@for (slot of slots; track slot.hour + '-' + slot.minute) {
+					<div
+						class="slot default-font"
+						[class.hour-mark]="slot.isHourMark"
+						[class.booked]="slot.isBooked"
+						[class.selected]="isSelected(slot)"
+						role="row"
+						[attr.aria-label]="slot.label + (slot.isBooked ? ' unavailable' : (isSelected(slot) ? ' selected' : ' available'))"
+						(click)="onSlotSelected(slot)"
 					>
-						&#10003;
-					</button>
-				</div>
-				<span class="slot-bar" aria-hidden="true"></span>
-			</div>
-		</ng-container>
+						<span class="slot-label">{{ slot.label }}</span>
+						@if (isSelected(slot)) {
+							<div class="slot-center">
+								<span class="slot-confirm-text">Confirm time?</span>
+								<button
+									type="button"
+									class="confirm-button"
+									aria-label="Confirm selected time"
+									(click)="confirmSelection($event)"
+								>
+									&#10003;
+								</button>
+							</div>
+						}
+						<span class="slot-bar" aria-hidden="true"></span>
+					</div>
+				}
+			}
 
-	</div>
+		</div>
+	}
 </section>
