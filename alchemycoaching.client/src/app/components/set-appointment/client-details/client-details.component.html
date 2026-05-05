@@ -1,8 +1,8 @@
 <div class="content-card default-font details-card">
-  <form class="details-form" aria-label="Contact information form">
+  <form class="details-form" aria-label="Contact information form" [formGroup]="form">
     <div class="field-header">
       <label class="field-label" for="scheduler-name">Name</label>
-      <span class="field-helper">Required</span>
+      <span class="field-helper" [hidden]="!form.controls.name.touched || !!form.controls.name.value?.trim()">Required</span>
     </div>
     <input
       id="scheduler-name"
@@ -10,14 +10,13 @@
       type="text"
       name="name"
       autocomplete="name"
-      required
-      [(ngModel)]="form.name"
-      (ngModelChange)="onFormChanged()"
+      formControlName="name"
+      (input)="onFormChanged()"
     />
 
     <div class="field-header">
       <label class="field-label" for="scheduler-email">Email</label>
-      <span class="field-helper">Required</span>
+      <span class="field-helper" [hidden]="!form.controls.email.touched || !!form.controls.email.value?.trim()">Required</span>
     </div>
     <input
       id="scheduler-email"
@@ -25,14 +24,13 @@
       type="email"
       name="email"
       autocomplete="email"
-      required
-      [(ngModel)]="form.email"
-      (ngModelChange)="onFormChanged()"
+      formControlName="email"
+      (input)="onFormChanged()"
     />
 
     <div class="field-header">
       <label class="field-label" for="scheduler-phone">Phone Number</label>
-      <span class="field-helper">Required</span>
+      <span class="field-helper" [hidden]="!form.controls.phone.touched || !!form.controls.phone.value?.trim()">Required</span>
     </div>
     <input
       id="scheduler-phone"
@@ -41,9 +39,9 @@
       name="phone"
       autocomplete="tel"
       inputmode="numeric"
-      required
-      [(ngModel)]="form.phone"
-      (ngModelChange)="onPhoneChanged($event)"
+      formControlName="phone"
+      (input)="onPhoneChanged(phoneInput.value)"
+      #phoneInput
     />
   </form>
 </div>

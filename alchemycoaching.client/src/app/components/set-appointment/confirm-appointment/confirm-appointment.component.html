@@ -45,14 +45,14 @@
       <footer class="appointment-dialog-actions">
         <button
           type="button"
-          class="dialog-secondary-button button"
+          class="dialog-secondary-button button small-button"
           (click)="requestClose()"
           [disabled]="vm.bookingStatus?.status === BookingStatus.Submitting">
           Cancel
         </button>
         <button
           type="button"
-          class="dialog-primary-button button"
+          class="dialog-primary-button button small-button"
           (click)="submitAppointment()"
           [disabled]="vm.bookingStatus?.status === BookingStatus.Submitting">
           {{ vm.bookingStatus?.status === BookingStatus.Submitting ? 'Confirming...' : 'Confirm' }}
