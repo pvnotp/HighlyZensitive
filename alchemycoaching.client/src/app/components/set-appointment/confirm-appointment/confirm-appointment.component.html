@@ -11,7 +11,7 @@
     >
       <header class="appointment-dialog-header">
         <div>
-          <h3 id="appointment-dialog-title">Confirm appointment</h3>
+          <h3 id="appointment-dialog-title">Confirm Appointment</h3>
           <p>{{ vm.selectedDateText }}</p>
         </div>
         <button type="button" class="dialog-close-button" aria-label="Close dialog" (click)="requestClose()">
@@ -21,17 +21,18 @@
 
       @if (vm.clientDetails) {
         <div class="appointment-client-info default-font">
-          <span>{{ vm.clientDetails.name }}</span>
-          <span class="appointment-client-separator">&middot;</span>
-          <span>{{ vm.clientDetails.phone }}</span>
+          <p><span class="appointment-client-label">Name:</span> {{ vm.clientDetails.name }}</p>
+          <p><span class="appointment-client-label">Phone:</span> {{ vm.clientDetails.phone }}</p>
         </div>
       }
 
-      <div class="appointment-form-field">
-        <label for="appointment-note">Note</label>
+      <p class="appointment-intent default-font">What do you hope for?</p>
+
+      <div class="appointment-form-field appointment-note-field">
         <textarea
           id="appointment-note"
           rows="4"
+          aria-label="What do you hope for?"
           [(ngModel)]="note"
           maxlength="500"
         ></textarea>
@@ -44,14 +45,14 @@
       <footer class="appointment-dialog-actions">
         <button
           type="button"
-          class="dialog-secondary-button"
+          class="dialog-secondary-button button"
           (click)="requestClose()"
           [disabled]="vm.bookingStatus?.status === BookingStatus.Submitting">
           Cancel
         </button>
         <button
           type="button"
-          class="dialog-primary-button"
+          class="dialog-primary-button button"
           (click)="submitAppointment()"
           [disabled]="vm.bookingStatus?.status === BookingStatus.Submitting">
           {{ vm.bookingStatus?.status === BookingStatus.Submitting ? 'Confirming...' : 'Confirm' }}
