@@ -100,7 +100,7 @@ export const selectSchedulerViewModel = createSelector(
     return {
       titleText: isVibeCheck ? 'Get a vibe check' : 'Schedule a session',
       contentText: isVibeCheck
-        ? "Let's chat!  It's already written in the stars that we would meet.  Pick your time and fulfill the prophesy. ★"
+        ? "Let's chat!  It's already written in the stars that we would meet.  Pick your time and fulfill the prophesy."
         : 'Choose a session type to see the scheduling details.',
       service,
       isPanelDisabled: clientDetails === null,

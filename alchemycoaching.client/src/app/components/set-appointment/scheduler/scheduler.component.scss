@@ -55,6 +55,9 @@
 .description-panel {
   flex: 1;
   min-width: 0;
+  color: rgba(255, 255, 255, 0.85);
+  padding: 0;
+  text-align: center;
 }
 
 .details-panel {
@@ -70,7 +73,7 @@
   z-index: 4;
   color: rgba(255, 255, 255, 0.7);
   width: auto;
-  text-align: left;
+  text-align: center;
   align-self: center;
   line-height: 1;
   font-size: clamp(2rem, 4vw, 4rem);
@@ -118,20 +121,16 @@
   height: auto;
 }
 
-.details-intro {
-  display: inline;
-  line-height: 1.5;
-  font-size: 0.95rem;
-  letter-spacing: 0.02em;
-  margin: 0;
-}
 
 .description-copy {
   display: flex;
   flex-wrap: wrap;
   align-items: baseline;
+  justify-content: center;
   column-gap: 0.35rem;
   row-gap: 0.15rem;
+  font-size: clamp(1rem, 1.2vw, 1.2rem);
+  color: rgba(255, 255, 255, 0.85);
 }
 
 .details-ending {
