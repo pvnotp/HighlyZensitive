@@ -40,9 +40,10 @@
       type="tel"
       name="phone"
       autocomplete="tel"
+      inputmode="numeric"
       required
       [(ngModel)]="form.phone"
-      (ngModelChange)="onFormChanged()"
+      (ngModelChange)="onPhoneChanged($event)"
     />
   </form>
 </div>
