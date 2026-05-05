@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewChild, inject } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ConfirmAppointmentComponent } from '../confirm-appointment/confirm-appointment.component';
+import { ClientDetailsComponent } from '../client-details/client-details.component';
 import { DatePickerComponent } from '../date-picker/date-picker.component';
 import { TimePickerComponent, TimeSlot } from '../time-picker/time-picker.component';
 import { SetAppointmentUtils } from '../set-appointment-utils';
@@ -8,7 +9,7 @@ import { SetAppointmentUtils } from '../set-appointment-utils';
 @Component({
   selector: 'app-scheduler',
   standalone: true,
-  imports: [DatePickerComponent, TimePickerComponent, ConfirmAppointmentComponent],
+  imports: [DatePickerComponent, TimePickerComponent, ConfirmAppointmentComponent, ClientDetailsComponent],
   templateUrl: './scheduler.component.html',
   styleUrl: './scheduler.component.scss'
 })
@@ -22,6 +23,10 @@ export class SchedulerComponent implements OnInit {
   isVibeCheck = false;
   titleText = 'Schedule a session';
   contentText = 'Choose a session type to see the scheduling details.';
+  contentEndingText = '';
+  contactName = '';
+  contactEmail = '';
+  contactPhone = '';
   selectedDate = (() => {
     const d = new Date();
     d.setHours(0, 0, 0, 0);
@@ -30,6 +35,10 @@ export class SchedulerComponent implements OnInit {
   })();
   selectedSlot: TimeSlot | null = null;
   isDialogOpen = false;
+
+  get isPickerDisabled(): boolean {
+    return !this.contactName.trim() || !this.contactEmail.trim() || !this.contactPhone.trim();
+  }
 
   onDateSelected(date: Date): void {
     this.selectedDate = date;
@@ -46,6 +55,28 @@ export class SchedulerComponent implements OnInit {
     this.selectedSlot = null;
   }
 
+  onContactFieldChanged(): void {
+    if (this.isPickerDisabled) {
+      this.closeDialog();
+      this.timePicker?.clearSelection();
+    }
+  }
+
+  onContactNameChanged(value: string): void {
+    this.contactName = value;
+    this.onContactFieldChanged();
+  }
+
+  onContactEmailChanged(value: string): void {
+    this.contactEmail = value;
+    this.onContactFieldChanged();
+  }
+
+  onContactPhoneChanged(value: string): void {
+    this.contactPhone = value;
+    this.onContactFieldChanged();
+  }
+
   onAppointmentCreated(): void {
     this.closeDialog();
     this.timePicker?.refreshAvailability();
@@ -58,8 +89,9 @@ export class SchedulerComponent implements OnInit {
       this.isVibeCheck = SetAppointmentUtils.isVibeCheck(this.type);
       this.titleText = this.isVibeCheck ? 'Get a vibe check' : 'Schedule a session';
       this.contentText = this.isVibeCheck
-        ? "Let's chat!  It's already written in the stars that we would meet.  Pick your time and fulfill the prophesy. ★"
+        ? "Let's chat!  It's already written in the stars that we would meet.  Pick your time and fulfill"
         : 'Choose a session type to see the scheduling details.';
+      this.contentEndingText = this.isVibeCheck ? 'the prophesy. ★' : '';
     });
   }
 }

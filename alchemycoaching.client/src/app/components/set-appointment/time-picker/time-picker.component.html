@@ -4,7 +4,7 @@
 	}
 
 	@if (!noTimesAvailable) {
-		<div class="time-scroll" role="grid" aria-label="Available times">
+		<div class="time-scroll" role="grid" aria-label="Available times" [attr.aria-disabled]="disabled">
 
 			@if (isLoading) {
 			<div class="state-message default-font">Loading availability…</div>
@@ -20,6 +20,7 @@
 						class="slot default-font"
 						[class.hour-mark]="slot.isHourMark"
 						[class.booked]="slot.isBooked"
+						[class.disabled]="disabled"
 						[class.selected]="isSelected(slot)"
 						role="row"
 						[attr.aria-label]="slot.label + (slot.isBooked ? ' unavailable' : (isSelected(slot) ? ' selected' : ' available'))"
@@ -32,6 +33,7 @@
 								<button
 									type="button"
 									class="confirm-button"
+									[disabled]="disabled"
 									aria-label="Confirm selected time"
 									(click)="confirmSelection($event)"
 								>

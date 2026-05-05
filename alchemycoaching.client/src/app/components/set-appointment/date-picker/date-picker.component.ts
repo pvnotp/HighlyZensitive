@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -19,6 +19,7 @@ export class DatePickerComponent {
   readonly weeks = this.buildNextSixWeeks();
 
   selectedDate = this.tomorrow;
+  @Input() disabled = false;
 
   @Output() readonly dateSelected = new EventEmitter<Date>();
 
@@ -40,6 +41,10 @@ export class DatePickerComponent {
   }
 
   selectDate(date: Date): void {
+    if (this.disabled) {
+      return;
+    }
+
     this.selectedDate = this.atMidnight(date);
     this.dateSelected.emit(this.selectedDate);
   }

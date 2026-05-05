@@ -1,0 +1,56 @@
+<div class="content-card default-font details-card">
+  <form class="details-form" aria-label="Contact information form">
+    <div class="field-header">
+      <label class="field-label" for="scheduler-name">Name</label>
+      <span class="field-helper">Required</span>
+    </div>
+    <input
+      id="scheduler-name"
+      class="field-input default-font"
+      type="text"
+      name="name"
+      autocomplete="name"
+         [ngMod      [(ngModel)]="form.name"
+      (ngModelChange)="onFormChanged()"
+    />
+
+    <div class="field-header">
+      <label class="field-label" for="scheduler-email">Email</label>
+      <span class="field-helper">Required</span>
+    </div>
+    <input
+      id="scheduler-email"
+      class="field-input default-font"
+      type="email"
+      name="email"
+      autocomplete="email"
+      required
+      [(ngModel)]="form.email"
+      (ngModelChange)="onFormChanged()"
+    />
+
+    <div class="field-header">
+      <label class="field-label" for="scheduler-phone">Phone Number</label>
+      <span class="field-helper">Required</span>
+    </div>
+    <input
+      id="scheduler-phone"
+      class="field-input default-font"
+      type="tel"
+      name="phone"
+      autocomplete="tel"
+      required
+      [(ngModel)]="form.phone"
+      (ngModelChange)="onFormChanged()"
+ModelChange)="onFormChanged()"
+    />
+  </form>
+</div>
+)"
+    />
+  </form>
+</div>
+)"
+    />
+  </form>
+</div>

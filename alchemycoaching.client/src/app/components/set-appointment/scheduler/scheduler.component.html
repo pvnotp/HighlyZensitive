@@ -5,22 +5,37 @@
   <div class="schedule-content">
     <div class="schedule-header">
       <div class="title display-font">{{ titleText }}</div>
-    </div>
-
-    <div class="description-panel">
-      <div class="content-card default-font panel-card">
-        <p>
-          {{ contentText }}
-        </p>
+      <div class="description-panel content-card default-font panel-card description-card">
+        <div class="description-copy">
+          <span class="details-intro">{{ contentText }}</span>
+          @if (isVibeCheck && contentEndingText) {
+            <div class="details-ending default-font">{{ contentEndingText }}</div>
+          }
+        </div>
       </div>
     </div>
 
-    <div class="calendar-panel">
-      <app-date-picker (dateSelected)="onDateSelected($event)"></app-date-picker>
+    <div class="details-panel">
+      <app-client-details
+        [contactName]="contactName"
+        [contactEmail]="contactEmail"
+        [contactPhone]="contactPhone"
+        (contactNameChange)="onContactNameChanged($event)"
+        (contactEmailChange)="onContactEmailChanged($event)"
+        (contactPhoneChange)="onContactPhoneChanged($event)">
+      </app-client-details>
     </div>
 
-    <div class="time-panel">
-      <app-time-picker [selectedDate]="selectedDate" (confirmRequested)="openAppointmentDialog($event)"></app-time-picker>
+    <div class="calendar-panel" [class.picker-disabled]="isPickerDisabled" [attr.aria-disabled]="isPickerDisabled">
+      <app-date-picker [disabled]="isPickerDisabled" (dateSelected)="onDateSelected($event)"></app-date-picker>
+    </div>
+
+    <div class="time-panel" [class.picker-disabled]="isPickerDisabled" [attr.aria-disabled]="isPickerDisabled">
+      <app-time-picker
+        [selectedDate]="selectedDate"
+        [disabled]="isPickerDisabled"
+        (confirmRequested)="openAppointmentDialog($event)">
+      </app-time-picker>
     </div>
   </div>
 

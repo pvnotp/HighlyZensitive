@@ -19,6 +19,7 @@ export interface TimeSlot {
 })
 export class TimePickerComponent implements OnChanges {
   @Input() selectedDate: Date | null = null;
+  @Input() disabled = false;
   @Output() confirmRequested = new EventEmitter<TimeSlot>();
 
   private readonly calendarService = inject(CalendarService);
@@ -33,6 +34,10 @@ export class TimePickerComponent implements OnChanges {
   noTimesAvailable = false;
 
   onSlotSelected(slot: TimeSlot): void {
+    if (this.disabled) {
+      return;
+    }
+
     if (slot.isBooked) {
       return;
     }
@@ -49,6 +54,10 @@ export class TimePickerComponent implements OnChanges {
   confirmSelection(event: Event): void {
     event.stopPropagation();
 
+    if (this.disabled) {
+      return;
+    }
+
     if (!this.selectedSlot) {
       return;
     }
@@ -57,6 +66,10 @@ export class TimePickerComponent implements OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
+    if (changes['disabled']?.currentValue) {
+      this.selectedSlot = null;
+    }
+
     if (changes['selectedDate']) {
       this.noTimesAvailable = this.computeNoTimesAvailable(this.selectedDate);
 
@@ -89,6 +102,10 @@ export class TimePickerComponent implements OnChanges {
     }
 
     this.loadEvents(this.selectedDate);
+  }
+
+  clearSelection(): void {
+    this.selectedSlot = null;
   }
 
   private buildSlots(date: Date, events: CalendarEvent[]): TimeSlot[] {
