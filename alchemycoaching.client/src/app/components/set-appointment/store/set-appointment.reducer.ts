@@ -76,6 +76,7 @@ const reducer = createReducer(
 
   on(SetAppointmentActions.submitAppointmentFailure, (state, { errorMessage }) => ({
     ...state,
+    dialogStatus: DialogStatus.Closed,
     bookingStatus: { status: BookingStatus.Error, errorMessage },
   })),
 );

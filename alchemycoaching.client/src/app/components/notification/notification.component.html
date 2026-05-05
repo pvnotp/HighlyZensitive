@@ -1,0 +1,17 @@
+@if (notification$ | async; as notification) {
+  @if (notification.displayed && notification.message.trim()) {
+    <div class="notification default-font" role="status" aria-live="polite" aria-atomic="true">
+      @if (notification.variant === 'warn') {
+        <span class="notification-icon" aria-hidden="true">&#9888;</span>
+      }
+      <p class="notification-message">{{ notification.message }}</p>
+      <button
+        type="button"
+        class="notification-close"
+        aria-label="Dismiss notification"
+        (click)="dismiss()">
+        &times;
+      </button>
+    </div>
+  }
+}

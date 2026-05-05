@@ -1,0 +1,59 @@
+@use '../../../style-variables.scss' as vars;
+
+:host {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 40;
+  pointer-events: none;
+}
+
+.notification {
+  pointer-events: auto;
+  width: min(22rem, calc(100vw - 1.5rem));
+  display: flex;
+  align-items: flex-start;
+  gap: 0.65rem;
+  background: rgba(vars.$dark, 0.95);
+  color: rgba(vars.$light, 0.95);
+  border: 1px solid rgba(vars.$light, 0.28);
+  border-radius: vars.$radius-sm;
+  box-shadow: 0 0.75rem 1.8rem rgba(0, 0, 0, 0.28);
+  padding: 0.7rem 0.8rem;
+}
+
+.notification-icon {
+  color: vars.$warn;
+  font-size: 1rem;
+  line-height: 1.35;
+  flex-shrink: 0;
+}
+
+.notification-message {
+  margin: 0;
+  line-height: 1.35;
+  font-size: 0.92rem;
+  letter-spacing: 0.01em;
+}
+
+.notification-close {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  color: rgba(vars.$light, 0.9);
+  font-size: 0.95rem;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0;
+  margin-left: auto;
+}
+
+.notification-close:hover {
+  color: #fff;
+}
+
+.notification-close:focus-visible {
+  outline: 2px solid rgba(vars.$light, 0.8);
+  outline-offset: 2px;
+}

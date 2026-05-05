@@ -3,6 +3,7 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { catchError, exhaustMap, map, of, switchMap, withLatestFrom } from 'rxjs';
 import { CalendarEvent, CalendarService } from '../../../services/calendar.service';
+import { GlobalActions } from '../../../global/store/global.actions';
 import { SetAppointmentActions } from './set-appointment.actions';
 import { setAppointmentFeature } from './set-appointment.reducer';
 import { END_HOUR, ServiceType, START_HOUR, TimeSlot } from './set-appointment.state';
@@ -120,6 +121,20 @@ export class SetAppointmentEffects {
           ? SetAppointmentActions.selectDate({ date: selectedDate })
           : SetAppointmentActions.loadTimesFailure(),
       ),
+    ),
+  );
+
+  notifyUserAfterBookingSuccess$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(SetAppointmentActions.submitAppointmentSuccess),
+      map(() => GlobalActions.notifyUser({ message: 'Your appointment has been confirmed!', duration: 3500, variant: 'success' })),
+    ),
+  );
+
+  notifyUserAfterBookingFailure$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(SetAppointmentActions.submitAppointmentFailure),
+      map(() => GlobalActions.notifyUser({ message: 'Something went wrong. Please try again.', duration: 4000, variant: 'warn' })),
     ),
   );
 }

@@ -10,6 +10,8 @@ import {
 } from './set-appointment.state';
 import { setAppointmentFeature } from './set-appointment.reducer';
 import { SetAppointmentUtils } from '../set-appointment-utils';
+import { globalFeature } from '../../../global/store/global.reducer';
+import { NotificationState } from '../../../global/store/global.state';
 
 // ---------------------------------------------------------------------------
 // View model interfaces
@@ -31,6 +33,7 @@ export interface SchedulerViewModel {
   contentText: string;
   service: Service | null;
   isPanelDisabled: boolean;
+  notification: NotificationState;
 }
 
 export interface DatePickerViewModel {
@@ -95,7 +98,8 @@ function isSlotSelectable(
 export const selectSchedulerViewModel = createSelector(
   setAppointmentFeature.selectService,
   setAppointmentFeature.selectClientDetails,
-  (service, clientDetails): SchedulerViewModel => {
+  globalFeature.selectNotification,
+  (service, clientDetails, notification): SchedulerViewModel => {
     const isVibeCheck = service?.type === ServiceType.VibeCheck;
     return {
       titleText: isVibeCheck ? 'Get a vibe check' : 'Schedule a session',
@@ -104,6 +108,7 @@ export const selectSchedulerViewModel = createSelector(
         : 'Choose a session type to see the scheduling details.',
       service,
       isPanelDisabled: clientDetails === null,
+      notification,
     };
   },
 );
