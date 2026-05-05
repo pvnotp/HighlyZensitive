@@ -1,8 +1,8 @@
 import { AsyncPipe, DatePipe } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { SetAppointmentActions } from '../store/set-appointment.actions';
-import { selectDatePickerViewModel } from '../store/set-appointment.selectors';
+import { BookAppointmentActions } from '../store/book-appointment.actions';
+import { selectDatePickerViewModel } from '../store/book-appointment.selectors';
 
 @Component({
   selector: 'app-date-picker',
@@ -40,7 +40,7 @@ export class DatePickerComponent {
       return;
     }
     const midnight = this.atMidnight(date);
-    this.store.dispatch(SetAppointmentActions.selectDate({ date: midnight.toISOString() }));
+    this.store.dispatch(BookAppointmentActions.selectDate({ date: midnight.toISOString() }));
   }
 
   isSelected(date: Date, selectedDate: Date | null): boolean {

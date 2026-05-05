@@ -6,9 +6,9 @@ import { ConfirmAppointmentComponent } from '../confirm-appointment/confirm-appo
 import { ClientDetailsComponent } from '../client-details/client-details.component';
 import { DatePickerComponent } from '../date-picker/date-picker.component';
 import { TimePickerComponent } from '../time-picker/time-picker.component';
-import { SetAppointmentActions } from '../store/set-appointment.actions';
-import { ServiceType } from '../store/set-appointment.state';
-import { selectSchedulerViewModel } from '../store/set-appointment.selectors';
+import { BookAppointmentActions } from '../store/book-appointment.actions';
+import { ServiceType } from '../store/book-appointment.state';
+import { selectSchedulerViewModel } from '../store/book-appointment.selectors';
 
 @Component({
   selector: 'app-scheduler',
@@ -27,7 +27,7 @@ export class SchedulerComponent implements OnInit {
     const tomorrow = new Date();
     tomorrow.setHours(0, 0, 0, 0);
     tomorrow.setDate(tomorrow.getDate() + 1);
-    this.store.dispatch(SetAppointmentActions.selectDate({ date: tomorrow.toISOString() }));
+    this.store.dispatch(BookAppointmentActions.selectDate({ date: tomorrow.toISOString() }));
 
     this.route.queryParamMap.subscribe((params) => {
       const type = params.get('type') ?? '';
@@ -37,7 +37,7 @@ export class SchedulerComponent implements OnInit {
           ? ServiceType.VibeCheck
           : ServiceType.VibeCheck;
       this.store.dispatch(
-        SetAppointmentActions.updateService({ service: { type: serviceType, duration } }),
+        BookAppointmentActions.updateService({ service: { type: serviceType, duration } }),
       );
     });
   }

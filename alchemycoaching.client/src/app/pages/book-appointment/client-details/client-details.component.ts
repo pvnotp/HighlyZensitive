@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
-import { SetAppointmentActions } from '../store/set-appointment.actions';
+import { BookAppointmentActions } from '../store/book-appointment.actions';
 
 @Component({
   selector: 'app-client-details',
@@ -28,12 +28,12 @@ export class ClientDetailsComponent {
 
     if (this.form.valid && trimmedName) {
       this.store.dispatch(
-        SetAppointmentActions.setClientDetails({
+        BookAppointmentActions.setClientDetails({
           clientDetails: { name: trimmedName, email: trimmedEmail, phone: trimmedPhone },
         }),
       );
     } else {
-      this.store.dispatch(SetAppointmentActions.clearDetails());
+      this.store.dispatch(BookAppointmentActions.clearDetails());
     }
   }
 

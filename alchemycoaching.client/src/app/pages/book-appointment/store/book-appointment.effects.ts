@@ -4,9 +4,9 @@ import { Store } from '@ngrx/store';
 import { catchError, exhaustMap, map, of, switchMap, withLatestFrom } from 'rxjs';
 import { CalendarEvent, CalendarService } from '../../../services/calendar.service';
 import { GlobalActions } from '../../../global/store/global.actions';
-import { SetAppointmentActions } from './set-appointment.actions';
-import { setAppointmentFeature } from './set-appointment.reducer';
-import { END_HOUR, ServiceType, START_HOUR, TimeSlot } from './set-appointment.state';
+import { BookAppointmentActions } from './book-appointment.actions';
+import { BookAppointmentFeature } from './book-appointment.reducer';
+import { END_HOUR, ServiceType, START_HOUR, TimeSlot } from './book-appointment.state';
 
 function buildTimeSlotsFromEvents(date: Date, events: CalendarEvent[]): TimeSlot[] {
   const slots: TimeSlot[] = [];
@@ -42,22 +42,22 @@ function buildTimeSlotsFromEvents(date: Date, events: CalendarEvent[]): TimeSlot
 }
 
 @Injectable()
-export class SetAppointmentEffects {
+export class BookAppointmentEffects {
   private readonly actions$ = inject(Actions);
   private readonly store = inject(Store);
   private readonly calendarService = inject(CalendarService);
 
   loadTimes$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(SetAppointmentActions.selectDate),
+      ofType(BookAppointmentActions.selectDate),
       switchMap(({ date }) =>
         this.calendarService.getEventsForDay(new Date(date)).pipe(
           map((events) =>
-            SetAppointmentActions.loadTimesSuccess({
+            BookAppointmentActions.loadTimesSuccess({
               times: buildTimeSlotsFromEvents(new Date(date), events),
             }),
           ),
-          catchError(() => of(SetAppointmentActions.loadTimesFailure())),
+          catchError(() => of(BookAppointmentActions.loadTimesFailure())),
         ),
       ),
     ),
@@ -65,17 +65,17 @@ export class SetAppointmentEffects {
 
   submitAppointment$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(SetAppointmentActions.submitAppointment),
+      ofType(BookAppointmentActions.submitAppointment),
       withLatestFrom(
-        this.store.select(setAppointmentFeature.selectClientDetails),
-        this.store.select(setAppointmentFeature.selectSelectedTime),
-        this.store.select(setAppointmentFeature.selectSelectedDate),
-        this.store.select(setAppointmentFeature.selectService),
+        this.store.select(BookAppointmentFeature.selectClientDetails),
+        this.store.select(BookAppointmentFeature.selectSelectedTime),
+        this.store.select(BookAppointmentFeature.selectSelectedDate),
+        this.store.select(BookAppointmentFeature.selectService),
       ),
       exhaustMap(([{ note }, clientDetails, selectedTime, selectedDate, service]) => {
         if (!clientDetails || !selectedTime || !selectedDate || !service) {
           return of(
-            SetAppointmentActions.submitAppointmentFailure({
+            BookAppointmentActions.submitAppointmentFailure({
               errorMessage: 'Missing booking information.',
             }),
           );
@@ -99,10 +99,10 @@ export class SetAppointmentEffects {
               : `Phone: ${clientDetails.phone}`,
           })
           .pipe(
-            map(() => SetAppointmentActions.submitAppointmentSuccess()),
+            map(() => BookAppointmentActions.submitAppointmentSuccess()),
             catchError(() =>
               of(
-                SetAppointmentActions.submitAppointmentFailure({
+                BookAppointmentActions.submitAppointmentFailure({
                   errorMessage: 'Could not confirm the appointment. Please try again.',
                 }),
               ),
@@ -114,26 +114,26 @@ export class SetAppointmentEffects {
 
   reloadTimesAfterBooking$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(SetAppointmentActions.submitAppointmentSuccess),
-      withLatestFrom(this.store.select(setAppointmentFeature.selectSelectedDate)),
+      ofType(BookAppointmentActions.submitAppointmentSuccess),
+      withLatestFrom(this.store.select(BookAppointmentFeature.selectSelectedDate)),
       map(([, selectedDate]) =>
         selectedDate
-          ? SetAppointmentActions.selectDate({ date: selectedDate })
-          : SetAppointmentActions.loadTimesFailure(),
+          ? BookAppointmentActions.selectDate({ date: selectedDate })
+          : BookAppointmentActions.loadTimesFailure(),
       ),
     ),
   );
 
   notifyUserAfterBookingSuccess$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(SetAppointmentActions.submitAppointmentSuccess),
+      ofType(BookAppointmentActions.submitAppointmentSuccess),
       map(() => GlobalActions.notifyUser({ message: 'Your appointment has been confirmed!', duration: 3500, variant: 'success' })),
     ),
   );
 
   notifyUserAfterBookingFailure$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(SetAppointmentActions.submitAppointmentFailure),
+      ofType(BookAppointmentActions.submitAppointmentFailure),
       map(() => GlobalActions.notifyUser({ message: 'Something went wrong. Please try again.', duration: 4000, variant: 'warn' })),
     ),
   );

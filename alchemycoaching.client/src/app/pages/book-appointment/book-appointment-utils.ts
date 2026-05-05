@@ -2,7 +2,7 @@ interface TimeSlotLabel {
   label: string;
 }
 
-export class SetAppointmentUtils {
+export class BookAppointmentUtils {
   static readonly appointmentDateFormatter = new Intl.DateTimeFormat('en-US', {
     weekday: 'long',
     month: 'long',
@@ -14,6 +14,6 @@ export class SetAppointmentUtils {
       return '';
     }
 
-    return `${SetAppointmentUtils.appointmentDateFormatter.format(selectedDate)} at ${selectedSlot.label}`;
+    return `${BookAppointmentUtils.appointmentDateFormatter.format(selectedDate)} at ${selectedSlot.label}`;
   }
 }

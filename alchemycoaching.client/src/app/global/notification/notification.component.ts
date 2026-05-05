@@ -2,8 +2,8 @@ import { AsyncPipe } from '@angular/common';
 import { Component, inject, OnDestroy } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
-import { GlobalActions } from '../../global/store/global.actions';
-import { globalFeature } from '../../global/store/global.reducer';
+import { GlobalActions } from '../store/global.actions';
+import { globalFeature } from '../store/global.reducer';
 
 @Component({
   selector: 'app-notification',

@@ -1,11 +1,11 @@
 import { Routes } from '@angular/router';
-import { HomeComponent } from './components/home/home.component';
-import { AboutComponent } from './components/about/about.component';
-import { SchedulerComponent } from './components/set-appointment/scheduler/scheduler.component';
+import { HomeComponent } from './pages/home/home.component';
+import { AboutComponent } from './pages/about/about.component';
+import { SchedulerComponent } from './pages/book-appointment/scheduler/scheduler.component';
 import { provideState } from '@ngrx/store';
 import { provideEffects } from '@ngrx/effects';
-import { setAppointmentFeature } from './components/set-appointment/store/set-appointment.reducer';
-import { SetAppointmentEffects } from './components/set-appointment/store/set-appointment.effects';
+import { BookAppointmentFeature } from './pages/book-appointment/store/book-appointment.reducer';
+import { BookAppointmentEffects } from './pages/book-appointment/store/book-appointment.effects';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -14,8 +14,8 @@ export const routes: Routes = [
     path: 'scheduler',
     component: SchedulerComponent,
     providers: [
-      provideState(setAppointmentFeature),
-      provideEffects(SetAppointmentEffects),
+      provideState(BookAppointmentFeature),
+      provideEffects(BookAppointmentEffects),
     ],
   },
   { path: '**', component: HomeComponent, pathMatch: 'full' }

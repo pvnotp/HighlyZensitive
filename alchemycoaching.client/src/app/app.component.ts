@@ -2,8 +2,8 @@
 import { Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { NavBarComponent } from './components/nav-bar/nav-bar.component';
-import { NotificationComponent } from './components/notification/notification.component';
+import { NavBarComponent } from './global/nav-bar/nav-bar.component';
+import { NotificationComponent } from './global/notification/notification.component';
 
 
 

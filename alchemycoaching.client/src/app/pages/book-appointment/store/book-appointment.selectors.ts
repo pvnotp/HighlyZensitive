@@ -7,9 +7,9 @@ import {
   ServiceType,
   TimePickerStatus,
   TimeSlot,
-} from './set-appointment.state';
-import { setAppointmentFeature } from './set-appointment.reducer';
-import { SetAppointmentUtils } from '../set-appointment-utils';
+} from './book-appointment.state';
+import { BookAppointmentFeature } from './book-appointment.reducer';
+import { BookAppointmentUtils } from '../book-appointment-utils';
 import { globalFeature } from '../../../global/store/global.reducer';
 import { NotificationState } from '../../../global/store/global.state';
 
@@ -96,8 +96,8 @@ function isSlotSelectable(
 // ---------------------------------------------------------------------------
 
 export const selectSchedulerViewModel = createSelector(
-  setAppointmentFeature.selectService,
-  setAppointmentFeature.selectClientDetails,
+  BookAppointmentFeature.selectService,
+  BookAppointmentFeature.selectClientDetails,
   globalFeature.selectNotification,
   (service, clientDetails, notification): SchedulerViewModel => {
     const isVibeCheck = service?.type === ServiceType.VibeCheck;
@@ -114,8 +114,8 @@ export const selectSchedulerViewModel = createSelector(
 );
 
 export const selectDatePickerViewModel = createSelector(
-  setAppointmentFeature.selectSelectedDate,
-  setAppointmentFeature.selectClientDetails,
+  BookAppointmentFeature.selectSelectedDate,
+  BookAppointmentFeature.selectClientDetails,
   (selectedDate, clientDetails): DatePickerViewModel => ({
     selectedDate: selectedDate ? new Date(selectedDate) : null,
     isPanelDisabled: clientDetails === null,
@@ -123,12 +123,12 @@ export const selectDatePickerViewModel = createSelector(
 );
 
 export const selectTimePickerViewModel = createSelector(
-  setAppointmentFeature.selectTimes,
-  setAppointmentFeature.selectSelectedTime,
-  setAppointmentFeature.selectSelectedDate,
-  setAppointmentFeature.selectClientDetails,
-  setAppointmentFeature.selectTimePickerStatus,
-  setAppointmentFeature.selectService,
+  BookAppointmentFeature.selectTimes,
+  BookAppointmentFeature.selectSelectedTime,
+  BookAppointmentFeature.selectSelectedDate,
+  BookAppointmentFeature.selectClientDetails,
+  BookAppointmentFeature.selectTimePickerStatus,
+  BookAppointmentFeature.selectService,
   (
     times,
     selectedTime,
@@ -167,12 +167,12 @@ export const selectTimePickerViewModel = createSelector(
 );
 
 export const selectConfirmDialogViewModel = createSelector(
-  setAppointmentFeature.selectDialogStatus,
-  setAppointmentFeature.selectBookingStatus,
-  setAppointmentFeature.selectClientDetails,
-  setAppointmentFeature.selectSelectedTime,
-  setAppointmentFeature.selectSelectedDate,
-  setAppointmentFeature.selectService,
+  BookAppointmentFeature.selectDialogStatus,
+  BookAppointmentFeature.selectBookingStatus,
+  BookAppointmentFeature.selectClientDetails,
+  BookAppointmentFeature.selectSelectedTime,
+  BookAppointmentFeature.selectSelectedDate,
+  BookAppointmentFeature.selectService,
   (
     dialogStatus,
     bookingStatus,
@@ -192,7 +192,7 @@ export const selectConfirmDialogViewModel = createSelector(
     let selectedDateText = '';
     if (selectedDateAsDate && selectedTime) {
       const startLabel = formatTimeLabel(selectedTime.hour, selectedTime.minute);
-      selectedDateText = SetAppointmentUtils.formatSelectedDateText(selectedDateAsDate, {
+      selectedDateText = BookAppointmentUtils.formatSelectedDateText(selectedDateAsDate, {
         label: startLabel,
       });
     }

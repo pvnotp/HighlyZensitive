@@ -1,8 +1,8 @@
 import { createActionGroup, emptyProps, props } from '@ngrx/store';
-import { ClientDetails, Service, TimeSlot } from './set-appointment.state';
+import { ClientDetails, Service, TimeSlot } from './book-appointment.state';
 
-export const SetAppointmentActions = createActionGroup({
-  source: 'SetAppointment',
+export const BookAppointmentActions = createActionGroup({
+  source: 'BookAppointment',
   events: {
     'Update Service': props<{ service: Service }>(),
     'Set Client Details': props<{ clientDetails: ClientDetails }>(),
