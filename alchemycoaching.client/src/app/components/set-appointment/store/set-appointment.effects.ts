@@ -1,0 +1,125 @@
+import { inject, Injectable } from '@angular/core';
+import { Actions, createEffect, ofType } from '@ngrx/effects';
+import { Store } from '@ngrx/store';
+import { catchError, exhaustMap, map, of, switchMap, withLatestFrom } from 'rxjs';
+import { CalendarEvent, CalendarService } from '../../../services/calendar.service';
+import { SetAppointmentActions } from './set-appointment.actions';
+import { setAppointmentFeature } from './set-appointment.reducer';
+import { END_HOUR, ServiceType, START_HOUR, TimeSlot } from './set-appointment.state';
+
+function buildTimeSlotsFromEvents(date: Date, events: CalendarEvent[]): TimeSlot[] {
+  const slots: TimeSlot[] = [];
+  const now = new Date();
+  const cutoff = new Date(now.getTime() + 6 * 60 * 60 * 1000);
+  const isToday = date.toDateString() === now.toDateString();
+  const isCutoffDay = date.toDateString() === cutoff.toDateString();
+
+  for (let hour = START_HOUR; hour < END_HOUR; hour++) {
+    for (let minute = 0; minute < 60; minute += 15) {
+      const slotStart = new Date(date);
+      slotStart.setHours(hour, minute, 0, 0);
+
+      if ((isToday || isCutoffDay) && slotStart <= cutoff) {
+        continue;
+      }
+
+      const slotEnd = new Date(slotStart);
+      slotEnd.setMinutes(slotEnd.getMinutes() + 15);
+
+      const isBooked = events.some((e) => {
+        if (e.isAllDay) return false;
+        const eventStart = new Date(e.start);
+        const eventEnd = new Date(e.end);
+        return eventStart < slotEnd && eventEnd > slotStart;
+      });
+
+      slots.push({ hour, minute, isBooked });
+    }
+  }
+
+  return slots;
+}
+
+@Injectable()
+export class SetAppointmentEffects {
+  private readonly actions$ = inject(Actions);
+  private readonly store = inject(Store);
+  private readonly calendarService = inject(CalendarService);
+
+  loadTimes$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(SetAppointmentActions.selectDate),
+      switchMap(({ date }) =>
+        this.calendarService.getEventsForDay(new Date(date)).pipe(
+          map((events) =>
+            SetAppointmentActions.loadTimesSuccess({
+              times: buildTimeSlotsFromEvents(new Date(date), events),
+            }),
+          ),
+          catchError(() => of(SetAppointmentActions.loadTimesFailure())),
+        ),
+      ),
+    ),
+  );
+
+  submitAppointment$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(SetAppointmentActions.submitAppointment),
+      withLatestFrom(
+        this.store.select(setAppointmentFeature.selectClientDetails),
+        this.store.select(setAppointmentFeature.selectSelectedTime),
+        this.store.select(setAppointmentFeature.selectSelectedDate),
+        this.store.select(setAppointmentFeature.selectService),
+      ),
+      exhaustMap(([{ note }, clientDetails, selectedTime, selectedDate, service]) => {
+        if (!clientDetails || !selectedTime || !selectedDate || !service) {
+          return of(
+            SetAppointmentActions.submitAppointmentFailure({
+              errorMessage: 'Missing booking information.',
+            }),
+          );
+        }
+
+        const start = new Date(selectedDate);
+        start.setHours(selectedTime.hour, selectedTime.minute, 0, 0);
+        const end = new Date(start);
+        end.setMinutes(end.getMinutes() + service.duration);
+
+        const summaryPrefix =
+          service.type === ServiceType.VibeCheck ? 'Vibe Check' : 'Session';
+
+        return this.calendarService
+          .createEvent({
+            summary: `${summaryPrefix} with ${clientDetails.name}`,
+            start: start.toISOString(),
+            end: end.toISOString(),
+            description: note
+              ? `Phone: ${clientDetails.phone}\nNote: ${note}`
+              : `Phone: ${clientDetails.phone}`,
+          })
+          .pipe(
+            map(() => SetAppointmentActions.submitAppointmentSuccess()),
+            catchError(() =>
+              of(
+                SetAppointmentActions.submitAppointmentFailure({
+                  errorMessage: 'Could not confirm the appointment. Please try again.',
+                }),
+              ),
+            ),
+          );
+      }),
+    ),
+  );
+
+  reloadTimesAfterBooking$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(SetAppointmentActions.submitAppointmentSuccess),
+      withLatestFrom(this.store.select(setAppointmentFeature.selectSelectedDate)),
+      map(([, selectedDate]) =>
+        selectedDate
+          ? SetAppointmentActions.selectDate({ date: selectedDate })
+          : SetAppointmentActions.loadTimesFailure(),
+      ),
+    ),
+  );
+}

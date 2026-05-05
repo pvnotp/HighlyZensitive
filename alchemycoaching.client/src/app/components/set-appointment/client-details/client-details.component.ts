@@ -1,5 +1,7 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { Store } from '@ngrx/store';
+import { SetAppointmentActions } from '../store/set-appointment.actions';
 
 @Component({
   selector: 'app-client-details',
@@ -9,11 +11,20 @@ import { FormsModule } from '@angular/forms';
   styleUrl: './client-details.component.scss'
 })
 export class ClientDetailsComponent {
-  @Input() contactName = '';
-  @Input() contactEmail = '';
-  @Input() contactPhone = '';
+  private readonly store = inject(Store);
 
-  @Output() readonly contactNameChange = new EventEmitter<string>();
-  @Output() readonly contactEmailChange = new EventEmitter<string>();
-  @Output() readonly contactPhoneChange = new EventEmitter<string>();
+  form = { name: '', email: '', phone: '' };
+
+  onFormChanged(): void {
+    const { name, email, phone } = this.form;
+    if (name.trim() && email.trim() && phone.trim()) {
+      this.store.dispatch(
+        SetAppointmentActions.setClientDetails({
+          clientDetails: { name: name.trim(), email: email.trim(), phone: phone.trim() },
+        }),
+      );
+    } else {
+      this.store.dispatch(SetAppointmentActions.clearDetails());
+    }
+  }
 }

@@ -1,51 +1,54 @@
-<section class="time-shell">
-	@if (noTimesAvailable) {
-		<div class="state-message default-font">No times available</div>
-	}
+@if (vm$ | async; as vm) {
+  <section class="time-shell">
+    @if (vm.timePickerStatus?.status === TimePickerStatus.Loaded && vm.times.length === 0) {
+      <div class="state-message default-font">No times available</div>
+    }
 
-	@if (!noTimesAvailable) {
-		<div class="time-scroll" role="grid" aria-label="Available times" [attr.aria-disabled]="disabled">
+    @if (vm.timePickerStatus?.status !== TimePickerStatus.Loaded || vm.times.length > 0) {
+      <div class="time-scroll" role="grid" aria-label="Available times" [attr.aria-disabled]="vm.isPanelDisabled">
 
-			@if (isLoading) {
-			<div class="state-message default-font">Loading availability…</div>
-			}
+        @if (vm.timePickerStatus?.status === TimePickerStatus.Loading) {
+          <div class="state-message default-font">Loading availability…</div>
+        }
 
-			@if (hasError) {
-			<div class="state-message default-font">Could not load availability. Please try again.</div>
-			}
+        @if (vm.timePickerStatus?.status === TimePickerStatus.Error) {
+          <div class="state-message default-font">{{ vm.timePickerStatus?.errorMessage ?? 'Could not load availability. Please try again.' }}</div>
+        }
 
-			@if (!isLoading && !hasError) {
-				@for (slot of slots; track slot.hour + '-' + slot.minute) {
-					<div
-						class="slot default-font"
-						[class.hour-mark]="slot.isHourMark"
-						[class.booked]="slot.isBooked"
-						[class.disabled]="disabled"
-						[class.selected]="isSelected(slot)"
-						role="row"
-						[attr.aria-label]="slot.label + (slot.isBooked ? ' unavailable' : (isSelected(slot) ? ' selected' : ' available'))"
-						(click)="onSlotSelected(slot)"
-					>
-						<span class="slot-label">{{ slot.label }}</span>
-						@if (isSelected(slot)) {
-							<div class="slot-center">
-								<span class="slot-confirm-text">Confirm time?</span>
-								<button
-									type="button"
-									class="confirm-button"
-									[disabled]="disabled"
-									aria-label="Confirm selected time"
-									(click)="confirmSelection($event)"
-								>
-									&#10003;
-								</button>
-							</div>
-						}
-						<span class="slot-bar" aria-hidden="true"></span>
-					</div>
-				}
-			}
+        @if (vm.timePickerStatus?.status === TimePickerStatus.Loaded) {
+          @for (slot of vm.times; track slot.hour + '-' + slot.minute) {
+            <div
+              class="slot default-font"
+              [class.hour-mark]="slot.isHourMark"
+              [class.booked]="slot.isBooked"
+              [class.disabled]="vm.isPanelDisabled || !slot.isSelectable"
+              [class.selected]="slot.isStart"
+              [class.in-range]="slot.isInRange"
+              role="row"
+              [attr.aria-label]="slot.label + (slot.isBooked ? ' unavailable' : (slot.isStart ? ' selected' : ' available'))"
+              (click)="onSlotSelected(slot, vm.isPanelDisabled)"
+            >
+              <span class="slot-label">{{ slot.label }}</span>
+              @if (slot.isStart) {
+                <div class="slot-center">
+                  <span class="slot-confirm-text">Confirm time?</span>
+                  <button
+                    type="button"
+                    class="confirm-button"
+                    [disabled]="vm.isPanelDisabled"
+                    aria-label="Confirm selected time"
+                    (click)="confirmSelection($event, vm.isPanelDisabled, vm.selectedStartTime)"
+                  >
+                    &#10003;
+                  </button>
+                </div>
+              }
+              <span class="slot-bar" aria-hidden="true"></span>
+            </div>
+          }
+        }
 
-		</div>
-	}
-</section>
+      </div>
+    }
+  </section>
+}

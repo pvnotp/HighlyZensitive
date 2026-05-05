@@ -10,7 +10,8 @@
       type="text"
       name="name"
       autocomplete="name"
-         [ngMod      [(ngModel)]="form.name"
+      required
+      [(ngModel)]="form.name"
       (ngModelChange)="onFormChanged()"
     />
 
@@ -42,15 +43,6 @@
       required
       [(ngModel)]="form.phone"
       (ngModelChange)="onFormChanged()"
-ModelChange)="onFormChanged()"
-    />
-  </form>
-</div>
-)"
-    />
-  </form>
-</div>
-)"
     />
   </form>
 </div>

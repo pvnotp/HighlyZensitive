@@ -1,166 +1,48 @@
-import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { CalendarService, CalendarEvent } from '../../../services/calendar.service';
-
-export interface TimeSlot {
-  hour: number;
-  minute: number;
-  label: string;
-  isHourMark: boolean;
-  isBooked: boolean;
-}
+import { AsyncPipe } from '@angular/common';
+import { Component, inject, OnInit } from '@angular/core';
+import { Store } from '@ngrx/store';
+import { SetAppointmentActions } from '../store/set-appointment.actions';
+import { selectTimePickerViewModel, TimeSlotViewModel } from '../store/set-appointment.selectors';
+import { TimePickerStatus, TimeSlot } from '../store/set-appointment.state';
 
 @Component({
   selector: 'app-time-picker',
   standalone: true,
-  imports: [CommonModule],
+  imports: [AsyncPipe],
   templateUrl: './time-picker.component.html',
   styleUrl: './time-picker.component.scss'
 })
-export class TimePickerComponent implements OnChanges {
-  @Input() selectedDate: Date | null = null;
-  @Input() disabled = false;
-  @Output() confirmRequested = new EventEmitter<TimeSlot>();
+export class TimePickerComponent implements OnInit {
+  private readonly store = inject(Store);
 
-  private readonly calendarService = inject(CalendarService);
+  readonly TimePickerStatus = TimePickerStatus;
+  readonly vm$ = this.store.select(selectTimePickerViewModel);
 
-  readonly START_HOUR = 11;
-  readonly END_HOUR = 21;
-
-  slots: TimeSlot[] = [];
-  isLoading = false;
-  hasError = false;
-  selectedSlot: TimeSlot | null = null;
-  noTimesAvailable = false;
-
-  onSlotSelected(slot: TimeSlot): void {
-    if (this.disabled) {
-      return;
-    }
-
-    if (slot.isBooked) {
-      return;
-    }
-
-    this.selectedSlot = slot;
+  ngOnInit(): void {
+    // Initial slot load is triggered by scheduler dispatching selectDate on init.
+    // Nothing to do here.
   }
 
-  isSelected(slot: TimeSlot): boolean {
-    return !!this.selectedSlot
-      && this.selectedSlot.hour === slot.hour
-      && this.selectedSlot.minute === slot.minute;
+  onSlotSelected(slot: TimeSlotViewModel, isPanelDisabled: boolean): void {
+    if (isPanelDisabled || slot.isBooked || !slot.isSelectable) {
+      return;
+    }
+    this.store.dispatch(SetAppointmentActions.selectTime({ time: { hour: slot.hour, minute: slot.minute, isBooked: slot.isBooked } }));
   }
 
-  confirmSelection(event: Event): void {
+  isStart(slot: TimeSlotViewModel, selectedStartTime: TimeSlot | null): boolean {
+    return !!selectedStartTime
+      && selectedStartTime.hour === slot.hour
+      && selectedStartTime.minute === slot.minute;
+  }
+
+  confirmSelection(event: Event, isPanelDisabled: boolean, selectedStartTime: TimeSlot | null): void {
     event.stopPropagation();
-
-    if (this.disabled) {
+    if (isPanelDisabled || !selectedStartTime) {
       return;
     }
-
-    if (!this.selectedSlot) {
-      return;
-    }
-
-    this.confirmRequested.emit(this.selectedSlot);
-  }
-
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes['disabled']?.currentValue) {
-      this.selectedSlot = null;
-    }
-
-    if (changes['selectedDate']) {
-      this.noTimesAvailable = this.computeNoTimesAvailable(this.selectedDate);
-
-      if (this.selectedDate) {
-        this.loadEvents(this.selectedDate);
-      }
-    }
-  }
-
-  private loadEvents(date: Date): void {
-    this.isLoading = true;
-    this.hasError = false;
-    this.selectedSlot = null;
-
-    this.calendarService.getEventsForDay(date).subscribe({
-      next: (events) => {
-        this.slots = this.buildSlots(date, events);
-        this.isLoading = false;
-      },
-      error: () => {
-        this.hasError = true;
-        this.isLoading = false;
-      }
-    });
-  }
-
-  refreshAvailability(): void {
-    if (!this.selectedDate) {
-      return;
-    }
-
-    this.loadEvents(this.selectedDate);
-  }
-
-  clearSelection(): void {
-    this.selectedSlot = null;
-  }
-
-  private buildSlots(date: Date, events: CalendarEvent[]): TimeSlot[] {
-    const slots: TimeSlot[] = [];
-    const now = new Date();
-    const cutoff = new Date(now.getTime() + 6 * 60 * 60 * 1000);
-    const isToday = date.toDateString() === now.toDateString();
-    const isCutoffDay = date.toDateString() === cutoff.toDateString();
-
-    for (let hour = this.START_HOUR; hour < this.END_HOUR; hour++) {
-      for (let minute = 0; minute < 60; minute += 15) {
-        const slotStart = new Date(date);
-        slotStart.setHours(hour, minute, 0, 0);
-
-        // Skip slots within 6 hours from now
-        if ((isToday || isCutoffDay) && slotStart <= cutoff) {
-          continue;
-        }
-
-        const slotEnd = new Date(slotStart);
-        slotEnd.setMinutes(slotEnd.getMinutes() + 15);
-
-        const isBooked = events.some((e) => {
-          if (e.isAllDay) return false;
-          const eventStart = new Date(e.start);
-          const eventEnd = new Date(e.end);
-          return eventStart < slotEnd && eventEnd > slotStart;
-        });
-
-        const displayHour = hour % 12 === 0 ? 12 : hour % 12;
-        const amPm = hour < 12 ? 'AM' : 'PM';
-        const label =
-          minute === 0
-            ? `${displayHour}:00 ${amPm}`
-            : `${displayHour}:${minute.toString().padStart(2, '0')}`;
-
-        slots.push({ hour, minute, label, isHourMark: minute === 0, isBooked });
-      }
-    }
-
-    return slots;
-  }
-
-  private computeNoTimesAvailable(date: Date | null): boolean {
-    if (!date) return false;
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const dateOnly = new Date(date);
-    dateOnly.setHours(0, 0, 0, 0);
-    if (dateOnly < today) return true;
-
-    // Check if all slots on this day fall within the 6-hour cutoff
-    const cutoff = new Date(Date.now() + 6 * 60 * 60 * 1000);
-    const lastSlot = new Date(date);
-    lastSlot.setHours(this.END_HOUR - 1, 45, 0, 0);
-    return lastSlot <= cutoff;
+    this.store.dispatch(SetAppointmentActions.openDialog());
   }
 }
+
+

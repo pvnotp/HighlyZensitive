@@ -1,23 +1,25 @@
-<section class="calendar-shell" [attr.aria-disabled]="disabled">
-  <div class="calendar-grid" role="grid" aria-label="Calendar for the next six weeks">
-    @for (dayName of weekdayNames; track dayName) {
-      <div class="weekday default-font">{{ dayName }}</div>
-    }
-
-    @for (week of weeks; track $index) {
-      @for (day of week; track day.getTime()) {
-        <button
-          class="day-cell default-font"
-          type="button"
-          [disabled]="disabled"
-          [class.selected]="isSelected(day)"
-          [class.other-month]="isOutsideCurrentMonth(day)"
-          [attr.aria-label]="day | date : 'fullDate'"
-          [attr.aria-pressed]="isSelected(day)"
-          (click)="selectDate(day)">
-          <span class="day-number">{{ day | date : 'd' }}</span>
-        </button>
+@if (vm$ | async; as vm) {
+  <section class="calendar-shell" [attr.aria-disabled]="vm.isPanelDisabled">
+    <div class="calendar-grid" role="grid" aria-label="Calendar for the next six weeks">
+      @for (dayName of weekdayNames; track dayName) {
+        <div class="weekday default-font">{{ dayName }}</div>
       }
-    }
-  </div>
-</section>
+
+      @for (week of weeks; track $index) {
+        @for (day of week; track day.getTime()) {
+          <button
+            class="day-cell default-font"
+            type="button"
+            [disabled]="vm.isPanelDisabled"
+            [class.selected]="isSelected(day, vm.selectedDate)"
+            [class.other-month]="isOutsideCurrentMonth(day)"
+            [attr.aria-label]="day | date : 'fullDate'"
+            [attr.aria-pressed]="isSelected(day, vm.selectedDate)"
+            (click)="selectDate(day, vm.isPanelDisabled)">
+            <span class="day-number">{{ day | date : 'd' }}</span>
+          </button>
+        }
+      }
+    </div>
+  </section>
+}

@@ -1,108 +1,54 @@
-import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges, inject } from '@angular/core';
+import { AsyncPipe } from '@angular/common';
+import { Component, inject, OnDestroy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { finalize } from 'rxjs';
-import { CalendarService } from '../../../services/calendar.service';
-import { TimeSlot } from '../time-picker/time-picker.component';
-import { SetAppointmentUtils } from '../set-appointment-utils';
-
-interface ConfirmAppointmentFormValue {
-  name: string;
-  phone: string;
-  note: string;
-}
+import { Actions, ofType } from '@ngrx/effects';
+import { Store } from '@ngrx/store';
+import { Subject, takeUntil } from 'rxjs';
+import { SetAppointmentActions } from '../store/set-appointment.actions';
+import { BookingStatus, DialogStatus } from '../store/set-appointment.state';
+import { selectConfirmDialogViewModel } from '../store/set-appointment.selectors';
 
 @Component({
   selector: 'app-confirm-appointment',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [AsyncPipe, FormsModule],
   templateUrl: './confirm-appointment.component.html',
   styleUrl: './confirm-appointment.component.scss'
 })
-export class ConfirmAppointmentComponent implements OnChanges {
-  private readonly calendarService = inject(CalendarService);
+export class ConfirmAppointmentComponent implements OnDestroy {
+  private readonly store = inject(Store);
+  private readonly actions$ = inject(Actions);
+  private readonly destroy$ = new Subject<void>();
 
-  @Input() isOpen = false;
-  @Input() selectedDate: Date | null = null;
-  @Input() selectedSlot: TimeSlot | null = null;
+  readonly DialogStatus = DialogStatus;
+  readonly BookingStatus = BookingStatus;
+  readonly vm$ = this.store.select(selectConfirmDialogViewModel);
 
-  @Output() closeRequested = new EventEmitter<void>();
-  @Output() appointmentCreated = new EventEmitter<void>();
+  note = '';
 
-  formValue: ConfirmAppointmentFormValue = { name: '', phone: '', note: '' };
-  submitError = '';
-  isSubmitting = false;
-  isSubmitDisabled = true;
-  selectedDateText = '';
-
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes['isOpen'] && this.isOpen) {
-      this.submitError = '';
-      this.selectedDateText = SetAppointmentUtils.formatSelectedDateText(this.selectedDate, this.selectedSlot);
-      this.updateSubmitDisabled();
-    }
+  constructor() {
+    this.actions$
+      .pipe(ofType(SetAppointmentActions.submitAppointmentSuccess), takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.note = '';
+      });
   }
 
-  onFormFieldChanged(): void {
-    this.updateSubmitDisabled();
+  get isSubmitDisabled(): boolean {
+    return false; // bookingStatus.status === Submitting handled by template binding
   }
 
   requestClose(): void {
-    if (this.isSubmitting) {
-      return;
-    }
-
-    this.resetForm();
-    this.submitError = '';
-    this.updateSubmitDisabled();
-    this.closeRequested.emit();
+    this.store.dispatch(SetAppointmentActions.closeDialog());
   }
 
   submitAppointment(): void {
-    if (!this.selectedDate || !this.selectedSlot || this.isSubmitDisabled) {
-      return;
-    }
-
-    const start = new Date(this.selectedDate);
-    start.setHours(this.selectedSlot.hour, this.selectedSlot.minute, 0, 0);
-
-    const end = new Date(start);
-    end.setMinutes(end.getMinutes() + 15);
-
-    const phone = this.formValue.phone.trim();
-    const note = this.formValue.note.trim();
-
-    this.isSubmitting = true;
-    this.updateSubmitDisabled();
-    this.submitError = '';
-
-    this.calendarService.createEvent({
-      summary: `Vibe Check with ${this.formValue.name.trim()}`,
-      start: start.toISOString(),
-      end: end.toISOString(),
-      description: note ? `Phone: ${phone}\nNote: ${note}` : `Phone: ${phone}`
-    }).pipe(
-      finalize(() => {
-        this.isSubmitting = false;
-        this.updateSubmitDisabled();
-      })
-    ).subscribe({
-      next: () => {
-        this.submitError = '';
-        this.resetForm();
-        this.appointmentCreated.emit();
-      },
-      error: () => {
-        this.submitError = 'Could not confirm the appointment. Please try again.';
-      }
-    });
+    this.store.dispatch(SetAppointmentActions.submitAppointment({ note: this.note.trim() }));
   }
 
-  private updateSubmitDisabled(): void {
-    this.isSubmitDisabled = !this.formValue.name.trim() || !this.formValue.phone.trim() || this.isSubmitting;
-  }
-
-  private resetForm(): void {
-    this.formValue = { name: '', phone: '', note: '' };
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }
+

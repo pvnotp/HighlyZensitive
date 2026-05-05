@@ -1,66 +1,62 @@
-@if (isOpen) {
-  <div class="appointment-dialog-backdrop" (click)="requestClose()"></div>
+@if (vm$ | async; as vm) {
+  @if (vm.dialogStatus === DialogStatus.Open) {
+    <div class="appointment-dialog-backdrop" (click)="requestClose()"></div>
 
-  <section
-    class="appointment-dialog default-font"
-    role="dialog"
-    aria-modal="true"
-    aria-labelledby="appointment-dialog-title"
-    (click)="$event.stopPropagation()"
-  >
-    <header class="appointment-dialog-header">
-      <div>
-        <h3 id="appointment-dialog-title">Confirm appointment</h3>
-        <p>{{ selectedDateText }}</p>
+    <section
+      class="appointment-dialog default-font"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="appointment-dialog-title"
+      (click)="$event.stopPropagation()"
+    >
+      <header class="appointment-dialog-header">
+        <div>
+          <h3 id="appointment-dialog-title">Confirm appointment</h3>
+          <p>{{ vm.selectedDateText }}</p>
+        </div>
+        <button type="button" class="dialog-close-button" aria-label="Close dialog" (click)="requestClose()">
+          &times;
+        </button>
+      </header>
+
+      @if (vm.clientDetails) {
+        <div class="appointment-client-info default-font">
+          <span>{{ vm.clientDetails.name }}</span>
+          <span class="appointment-client-separator">&middot;</span>
+          <span>{{ vm.clientDetails.phone }}</span>
+        </div>
+      }
+
+      <div class="appointment-form-field">
+        <label for="appointment-note">Note</label>
+        <textarea
+          id="appointment-note"
+          rows="4"
+          [(ngModel)]="note"
+          maxlength="500"
+        ></textarea>
       </div>
-      <button type="button" class="dialog-close-button" aria-label="Close dialog" (click)="requestClose()">
-        &times;
-      </button>
-    </header>
 
-    <div class="appointment-form-field">
-      <label for="appointment-name">Name</label>
-      <input
-        id="appointment-name"
-        type="text"
-        [(ngModel)]="formValue.name"
-        (ngModelChange)="onFormFieldChanged()"
-        maxlength="100"
-      />
-    </div>
+      @if (vm.bookingStatus?.status === BookingStatus.Error) {
+        <p class="appointment-error">{{ vm.bookingStatus?.errorMessage }}</p>
+      }
 
-    <div class="appointment-form-field">
-      <label for="appointment-phone">Phone number</label>
-      <input
-        id="appointment-phone"
-        type="tel"
-        [(ngModel)]="formValue.phone"
-        (ngModelChange)="onFormFieldChanged()"
-        maxlength="30"
-      />
-    </div>
-
-    <div class="appointment-form-field">
-      <label for="appointment-note">Note</label>
-      <textarea
-        id="appointment-note"
-        rows="4"
-        [(ngModel)]="formValue.note"
-        maxlength="500"
-      ></textarea>
-    </div>
-
-    @if (submitError) {
-      <p class="appointment-error">{{ submitError }}</p>
-    }
-
-    <footer class="appointment-dialog-actions">
-      <button type="button" class="dialog-secondary-button" (click)="requestClose()" [disabled]="isSubmitting">
-        Cancel
-      </button>
-      <button type="button" class="dialog-primary-button" (click)="submitAppointment()" [disabled]="isSubmitDisabled">
-        {{ isSubmitting ? 'Confirming...' : 'Confirm' }}
-      </button>
-    </footer>
-  </section>
+      <footer class="appointment-dialog-actions">
+        <button
+          type="button"
+          class="dialog-secondary-button"
+          (click)="requestClose()"
+          [disabled]="vm.bookingStatus?.status === BookingStatus.Submitting">
+          Cancel
+        </button>
+        <button
+          type="button"
+          class="dialog-primary-button"
+          (click)="submitAppointment()"
+          [disabled]="vm.bookingStatus?.status === BookingStatus.Submitting">
+          {{ vm.bookingStatus?.status === BookingStatus.Submitting ? 'Confirming...' : 'Confirm' }}
+        </button>
+      </footer>
+    </section>
+  }
 }

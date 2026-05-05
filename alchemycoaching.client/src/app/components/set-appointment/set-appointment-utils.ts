@@ -9,10 +9,6 @@ export class SetAppointmentUtils {
     day: 'numeric'
   });
 
-  static isVibeCheck(type: string): boolean {
-    return type.trim().toLowerCase() === 'vibe check';
-  }
-
   static formatSelectedDateText(selectedDate: Date | null, selectedSlot: TimeSlotLabel | null): string {
     if (!selectedDate || !selectedSlot) {
       return '';

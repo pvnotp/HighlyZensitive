@@ -1,49 +1,31 @@
-<div class="schedule-container">
-  <div class="background-layer" aria-hidden="true"></div>
-  <div class="overlay-layer" aria-hidden="true"></div>
+@if (vm$ | async; as vm) {
+  <div class="schedule-container">
+    <div class="background-layer" aria-hidden="true"></div>
+    <div class="overlay-layer" aria-hidden="true"></div>
 
-  <div class="schedule-content">
-    <div class="schedule-header">
-      <div class="title display-font">{{ titleText }}</div>
-      <div class="description-panel content-card default-font panel-card description-card">
-        <div class="description-copy">
-          <span class="details-intro">{{ contentText }}</span>
-          @if (isVibeCheck && contentEndingText) {
-            <div class="details-ending default-font">{{ contentEndingText }}</div>
-          }
+    <div class="schedule-content">
+      <div class="schedule-header">
+        <div class="title display-font">{{ vm.titleText }}</div>
+        <div class="description-panel content-card default-font panel-card description-card">
+          <div class="description-copy">
+            <span class="details-intro">{{ vm.contentText }}</span>
+          </div>
         </div>
+      </div>
+
+      <div class="details-panel">
+        <app-client-details></app-client-details>
+      </div>
+
+      <div class="calendar-panel" [class.picker-disabled]="vm.isPanelDisabled" [attr.aria-disabled]="vm.isPanelDisabled">
+        <app-date-picker></app-date-picker>
+      </div>
+
+      <div class="time-panel" [class.picker-disabled]="vm.isPanelDisabled" [attr.aria-disabled]="vm.isPanelDisabled">
+        <app-time-picker></app-time-picker>
       </div>
     </div>
 
-    <div class="details-panel">
-      <app-client-details
-        [contactName]="contactName"
-        [contactEmail]="contactEmail"
-        [contactPhone]="contactPhone"
-        (contactNameChange)="onContactNameChanged($event)"
-        (contactEmailChange)="onContactEmailChanged($event)"
-        (contactPhoneChange)="onContactPhoneChanged($event)">
-      </app-client-details>
-    </div>
-
-    <div class="calendar-panel" [class.picker-disabled]="isPickerDisabled" [attr.aria-disabled]="isPickerDisabled">
-      <app-date-picker [disabled]="isPickerDisabled" (dateSelected)="onDateSelected($event)"></app-date-picker>
-    </div>
-
-    <div class="time-panel" [class.picker-disabled]="isPickerDisabled" [attr.aria-disabled]="isPickerDisabled">
-      <app-time-picker
-        [selectedDate]="selectedDate"
-        [disabled]="isPickerDisabled"
-        (confirmRequested)="openAppointmentDialog($event)">
-      </app-time-picker>
-    </div>
+    <app-confirm-appointment></app-confirm-appointment>
   </div>
-
-  <app-confirm-appointment
-    [isOpen]="isDialogOpen && !!selectedSlot"
-    [selectedDate]="selectedDate"
-    [selectedSlot]="selectedSlot"
-    (closeRequested)="closeDialog()"
-    (appointmentCreated)="onAppointmentCreated()"
-  ></app-confirm-appointment>
-</div>
+}

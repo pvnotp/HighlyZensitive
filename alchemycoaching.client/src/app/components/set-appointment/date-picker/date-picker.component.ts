@@ -1,27 +1,24 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { AsyncPipe, DatePipe } from '@angular/common';
+import { Component, inject } from '@angular/core';
+import { Store } from '@ngrx/store';
+import { SetAppointmentActions } from '../store/set-appointment.actions';
+import { selectDatePickerViewModel } from '../store/set-appointment.selectors';
 
 @Component({
   selector: 'app-date-picker',
   standalone: true,
-  imports: [CommonModule],
+  imports: [AsyncPipe, DatePipe],
   templateUrl: './date-picker.component.html',
   styleUrl: './date-picker.component.scss'
 })
 export class DatePickerComponent {
+  private readonly store = inject(Store);
+
   readonly weekdayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
   readonly today = this.atMidnight(new Date());
-  readonly tomorrow = (() => {
-    const date = new Date(this.today);
-    date.setDate(date.getDate() + 1);
-    return date;
-  })();
   readonly weeks = this.buildNextSixWeeks();
 
-  selectedDate = this.tomorrow;
-  @Input() disabled = false;
-
-  @Output() readonly dateSelected = new EventEmitter<Date>();
+  readonly vm$ = this.store.select(selectDatePickerViewModel);
 
   private buildNextSixWeeks(): Date[][] {
     const start = this.startOfWeek(this.today);
@@ -32,25 +29,23 @@ export class DatePickerComponent {
     });
 
     const weeks: Date[][] = [];
-
     for (let weekIndex = 0; weekIndex < 6; weekIndex++) {
       weeks.push(days.slice(weekIndex * 7, weekIndex * 7 + 7));
     }
-
     return weeks;
   }
 
-  selectDate(date: Date): void {
-    if (this.disabled) {
+  selectDate(date: Date, isPanelDisabled: boolean): void {
+    if (isPanelDisabled) {
       return;
     }
-
-    this.selectedDate = this.atMidnight(date);
-    this.dateSelected.emit(this.selectedDate);
+    const midnight = this.atMidnight(date);
+    this.store.dispatch(SetAppointmentActions.selectDate({ date: midnight.toISOString() }));
   }
 
-  isSelected(date: Date): boolean {
-    return this.atMidnight(date).getTime() === this.selectedDate.getTime();
+  isSelected(date: Date, selectedDate: Date | null): boolean {
+    if (!selectedDate) return false;
+    return this.atMidnight(date).getTime() === selectedDate.getTime();
   }
 
   isOutsideCurrentMonth(date: Date): boolean {
