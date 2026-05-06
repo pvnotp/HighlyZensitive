@@ -7,8 +7,6 @@ namespace AlchemyCoaching.Server.Services
 {
     public class GoogleCalendarService(IConfiguration configuration) : IGoogleCalendarService
     {
-        private readonly string _calendarId = configuration["GoogleCalendar:CalendarId"]
-            ?? throw new InvalidOperationException("GoogleCalendar:CalendarId is not configured.");
 
         private readonly CalendarService _calendarService = new CalendarService(new BaseClientService.Initializer
         {
@@ -21,8 +19,10 @@ namespace AlchemyCoaching.Server.Services
             ApplicationName = "AlchemyCoaching"
         });
 
-        public async Task<IList<CalendarEventDto>> GetEventsAsync(DateTime? from, DateTime? to)
+        public async Task<IList<CalendarEventDto>> GetEventsAsync(Calendar calendar, DateTime? from, DateTime? to)
         {
+
+
             var fromUtc = (from ?? DateTime.UtcNow).ToUniversalTime();
             var toUtc = (to ?? fromUtc.AddDays(30)).ToUniversalTime();
 
@@ -31,7 +31,7 @@ namespace AlchemyCoaching.Server.Services
                 throw new ArgumentException("The 'to' value must be greater than 'from'.");
             }
 
-            var request = _calendarService.Events.List(_calendarId);
+            var request = _calendarService.Events.List(GetCalendarId(calendar));
             request.TimeMinDateTimeOffset = fromUtc;
             request.TimeMaxDateTimeOffset = toUtc;
             request.SingleEvents = true;
@@ -47,6 +47,8 @@ namespace AlchemyCoaching.Server.Services
                     Summary = e.Summary,
                     Start = e.Start?.DateTimeDateTimeOffset ?? ToDateTimeOffset(e.Start?.Date),
                     End = e.End?.DateTimeDateTimeOffset ?? ToDateTimeOffset(e.End?.Date),
+                    Description = e.Description,
+                    Location = e.Location,
                     HtmlLink = e.HtmlLink,
                     Status = e.Status,
                     IsAllDay = !string.IsNullOrWhiteSpace(e.Start?.Date),
@@ -70,7 +72,7 @@ namespace AlchemyCoaching.Server.Services
                 End = new EventDateTime { DateTimeDateTimeOffset = request.End },
             };
 
-            var created = await _calendarService.Events.Insert(newEvent, _calendarId).ExecuteAsync();
+            var created = await _calendarService.Events.Insert(newEvent, GetCalendarId(request.Calendar)).ExecuteAsync();
 
             return new CalendarEventDto
             {
@@ -81,6 +83,17 @@ namespace AlchemyCoaching.Server.Services
                 HtmlLink = created.HtmlLink,
                 Status = created.Status,
                 IsAllDay = !string.IsNullOrWhiteSpace(created.Start?.Date),
+            };
+        }
+
+        private string GetCalendarId(Calendar calendar){
+            return calendar switch
+            {
+                Calendar.Availability => configuration["GoogleCalendar:CalendarId"]
+                    ?? throw new InvalidOperationException("GoogleCalendar:CalendarId is not configured."),
+                Calendar.Events => configuration["GoogleCalendar:EventCalendarId"]
+                    ?? throw new InvalidOperationException("GoogleCalendar:CalendarId is not configured."),
+                _ => throw new ArgumentException("Invalid calendar specified.")
             };
         }
 

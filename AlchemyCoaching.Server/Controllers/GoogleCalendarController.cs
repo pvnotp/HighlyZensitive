@@ -8,11 +8,12 @@ namespace AlchemyCoaching.Server.Controllers
     public class GoogleCalendarController(IGoogleCalendarService googleCalendarService) : ControllerBase
     {
         [HttpGet("events")]
-        public async Task<ActionResult<IList<GoogleCalendarEventDto>>> GetEvents([FromQuery] DateTime? from, [FromQuery] DateTime? to)
+        public async Task<ActionResult<IList<GoogleCalendarEventDto>>> GetEvents(
+            [FromQuery] Calendar calendar, [FromQuery] DateTime? from, [FromQuery] DateTime? to)
         {
             try
             {
-                var events = await googleCalendarService.GetEventsAsync(from, to);
+                var events = await googleCalendarService.GetEventsAsync(calendar, from, to);
                 return Ok(events);
             }
             catch (ArgumentException ex)

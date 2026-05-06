@@ -19,11 +19,16 @@ export interface CreateCalendarEventRequest {
   location?: string;
 }
 
+export enum Calendar {
+  Availability,
+  Events
+}
+
 @Injectable({ providedIn: 'root' })
 export class CalendarService {
   private readonly http = inject(HttpClient);
 
-  getEventsForDay(date: Date): Observable<CalendarEvent[]> {
+  getAvailabilityForDay(date: Date): Observable<CalendarEvent[]> {
     const from = new Date(date);
     from.setHours(0, 0, 0, 0);
 
@@ -32,6 +37,25 @@ export class CalendarService {
 
     return this.http.get<CalendarEvent[]>('/calendar/events', {
       params: {
+        calendar: Calendar.Availability,
+        from: from.toISOString(),
+        to: to.toISOString()
+      }
+    });
+  }
+
+  getUpcomingEvents(): Observable<CalendarEvent[]> {
+    const now = new Date();
+    const from = new Date(now);
+    from.setHours(0, 0, 0, 0);
+
+    const to = new Date(now);
+    to.setDate(to.getDate() + 30); // Fetch events for the next 30 days
+    to.setHours(23, 59, 59, 999);
+
+    return this.http.get<CalendarEvent[]>('/calendar/events', {
+      params: {
+        calendar: Calendar.Events,
         from: from.toISOString(),
         to: to.toISOString()
       }

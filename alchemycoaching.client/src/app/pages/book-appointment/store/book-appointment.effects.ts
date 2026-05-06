@@ -54,7 +54,7 @@ export class BookAppointmentEffects {
     this.actions$.pipe(
       ofType(BookAppointmentActions.selectDate),
       switchMap(({ date }) =>
-        this.calendarService.getEventsForDay(new Date(date)).pipe(
+        this.calendarService.getAvailabilityForDay(new Date(date)).pipe(
           map((events) =>
             BookAppointmentActions.loadTimesSuccess({
               times: buildTimeSlotsFromEvents(new Date(date), events),
