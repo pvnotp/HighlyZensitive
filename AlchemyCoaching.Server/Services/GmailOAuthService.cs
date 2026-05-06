@@ -17,11 +17,18 @@ namespace AlchemyCoaching.Server.Services
         private string GetRedirectUri()
         {
             var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+            _logger.LogInformation("ASPNETCORE_ENVIRONMENT is: {Env}", env);
+            string redirectUri;
             if (string.Equals(env, "Production", StringComparison.OrdinalIgnoreCase))
             {
-                return "https://alchemycoaching-gacve7fsgmarengw.eastus2-01.azurewebsites.net/auth/oauthtoken";
+                redirectUri = "https://alchemycoaching-gacve7fsgmarengw.eastus2-01.azurewebsites.net/auth/oauthtoken";
             }
-            return "http://localhost:5287/auth/oauthtoken";
+            else
+            {
+                redirectUri = "http://localhost:5287/auth/oauthtoken";
+            }
+            _logger.LogInformation("GetRedirectUri returning: {RedirectUri}", redirectUri);
+            return redirectUri;
         }
 
         public async Task<(TokenResponse? token, string errorJson)> ExchangeCodeForTokensAsync(string code)
