@@ -2,6 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { catchError, exhaustMap, map, of, switchMap, withLatestFrom } from 'rxjs';
+import { EmailService } from '../../../services/email.service';
 import { CalendarEvent, CalendarService } from '../../../services/calendar.service';
 import { GlobalActions } from '../../../global/store/global.actions';
 import { BookAppointmentActions } from './book-appointment.actions';
@@ -45,8 +46,9 @@ function buildTimeSlotsFromEvents(date: Date, events: CalendarEvent[]): TimeSlot
 export class BookAppointmentEffects {
   private readonly actions$ = inject(Actions);
   private readonly store = inject(Store);
-  private readonly calendarService = inject(CalendarService);
-
+  private readonly calendarService = inject(CalendarService); 
+  private readonly emailService = inject(EmailService);
+  
   loadTimes$ = createEffect(() =>
     this.actions$.pipe(
       ofType(BookAppointmentActions.selectDate),
@@ -137,4 +139,24 @@ export class BookAppointmentEffects {
       map(({ errorMessage }) => GlobalActions.notifyUser({ message: errorMessage, duration: 4000, variant: 'warn' })),
     ),
   );
+
+  sendConfirmationEmail$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(BookAppointmentActions.submitAppointmentSuccess),
+      withLatestFrom(this.store.select(BookAppointmentFeature.selectClientDetails)),
+      exhaustMap(([, clientDetails]) => {
+        if (!clientDetails?.email) return of();
+        return this.emailService.sendEmail({
+          from: 'alisonjoyforster@gmail.com',
+          to: clientDetails.email,
+          subject: 'TEST',
+          body: 'HELLO',
+        }).pipe(
+          catchError(() => of())
+        );
+      })
+    ),
+    { dispatch: false }
+  );
+
 }

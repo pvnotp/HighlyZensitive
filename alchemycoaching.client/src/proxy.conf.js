@@ -7,6 +7,7 @@ const PROXY_CONFIG = [
   {
     context: [
       "/calendar",
+      "/gmail",
     ],
     target,
     secure: false
