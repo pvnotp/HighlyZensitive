@@ -7,7 +7,7 @@ namespace AlchemyCoaching.Server.Controllers
 {
     [Route("auth")]
     [ApiController]
-    public class AuthController(IAuthService authService, ILogger<AuthController> logger) : ControllerBase
+    public class AuthController(IAuthService authService, ILogger<AuthController> logger, GmailOAuthService gmailOAuthService) : ControllerBase
     {
         // GET: api/auth/email@email.com
         [HttpGet("{email}")]
@@ -43,6 +43,17 @@ namespace AlchemyCoaching.Server.Controllers
                 logger.LogWarning("Role lookup failed for user {UserId}; expected exactly one role.", id);
                 return NotFound();
             }
+        }
+        // GET: auth/oauthtoken
+        [HttpGet("oauthtoken")]
+        public async Task<IActionResult> GetOAuthToken([FromQuery] string code)
+        {
+            var tokens = await gmailOAuthService.ExchangeCodeForTokensAsync(code);
+            if (tokens == null)
+            {
+                return BadRequest("Failed to exchange code for tokens.");
+            }
+            return Ok(tokens);
         }
     }
 }
