@@ -43,6 +43,7 @@ namespace AlchemyCoaching.Server.Controllers
                 return NotFound();
             }
         }
+        
         // GET: auth/oauthtoken
         [HttpGet("oauthtoken")]
         public async Task<IActionResult> GetOAuthToken([FromQuery] string code)
