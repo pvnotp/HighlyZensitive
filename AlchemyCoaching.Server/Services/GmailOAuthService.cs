@@ -24,7 +24,7 @@ namespace AlchemyCoaching.Server.Services
             return "http://localhost:5287/auth/oauthtoken";
         }
 
-        public async Task<TokenResponse?> ExchangeCodeForTokensAsync(string code)
+        public async Task<(TokenResponse? token, string errorJson)> ExchangeCodeForTokensAsync(string code)
         {
             var clientId = _config["Gmail:ClientId"];
             var clientSecret = _config["Gmail:ClientSecret"];
@@ -48,24 +48,24 @@ namespace AlchemyCoaching.Server.Services
             var json = await response.Content.ReadAsStringAsync();
             if (!response.IsSuccessStatusCode)
             {
-                return null;
+                return (null, json);
             }
 
             var token = JsonSerializer.Deserialize<TokenResponse>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-            return token;
+            return (token, "");
         }
     }
 
     public class TokenResponse
     {
         [JsonPropertyName("access_token")]
-        public string AccessToken { get; set; }
+        public required string AccessToken { get; set; }
         [JsonPropertyName("refresh_token")]
-        public string RefreshToken { get; set; }
+        public required string RefreshToken { get; set; }
         [JsonPropertyName("scope")]
-        public string Scope { get; set; }
+        public required string Scope { get; set; }
         [JsonPropertyName("token_type")]
-        public string TokenType { get; set; }
+        public required string TokenType { get; set; }
         [JsonPropertyName("expires_in")]
         public int ExpiresIn { get; set; }
     }

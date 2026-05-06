@@ -48,10 +48,10 @@ namespace AlchemyCoaching.Server.Controllers
         [HttpGet("oauthtoken")]
         public async Task<IActionResult> GetOAuthToken([FromQuery] string code)
         {
-            var tokens = await gmailOAuthService.ExchangeCodeForTokensAsync(code);
+            var (tokens, errorJson) = await gmailOAuthService.ExchangeCodeForTokensAsync(code);
             if (tokens == null)
             {
-                return BadRequest("Failed to exchange code for tokens.");
+                return BadRequest(errorJson);
             }
             return Ok(tokens);
         }
