@@ -70,7 +70,6 @@ const reducer = createReducer(
   on(BookAppointmentActions.submitAppointmentSuccess, (state) => ({
     ...state,
     dialogStatus: DialogStatus.Closed,
-    selectedTime: null,
     bookingStatus: { status: BookingStatus.Submitted },
   })),
 
@@ -78,6 +77,11 @@ const reducer = createReducer(
     ...state,
     dialogStatus: DialogStatus.Closed,
     bookingStatus: { status: BookingStatus.Error, errorMessage },
+  })),
+
+  on(BookAppointmentActions.confirmationEmailComplete, (state) => ({
+    ...state,
+    selectedTime: null
   })),
 );
 

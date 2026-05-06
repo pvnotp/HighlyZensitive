@@ -16,4 +16,12 @@ export class BookAppointmentUtils {
 
     return `${BookAppointmentUtils.appointmentDateFormatter.format(selectedDate)} at ${selectedSlot.label}`;
   }
+
+  static formatTimeLabel(hour: number, minute: number): string {
+    const displayHour = hour % 12 === 0 ? 12 : hour % 12;
+    const amPm = hour < 12 ? 'AM' : 'PM';
+    return minute === 0
+      ? `${displayHour}:00 ${amPm}`
+      : `${displayHour}:${minute.toString().padStart(2, '0')}`;
+  }
 }

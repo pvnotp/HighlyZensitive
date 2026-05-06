@@ -8,6 +8,7 @@ import { GlobalActions } from '../../../global/store/global.actions';
 import { BookAppointmentActions } from './book-appointment.actions';
 import { BookAppointmentFeature } from './book-appointment.reducer';
 import { END_HOUR, ServiceType, START_HOUR, TimeSlot } from './book-appointment.state';
+import { BookAppointmentUtils } from '../book-appointment-utils';
 
 function buildTimeSlotsFromEvents(date: Date, events: CalendarEvent[]): TimeSlot[] {
   const slots: TimeSlot[] = [];
@@ -114,18 +115,6 @@ export class BookAppointmentEffects {
     ),
   );
 
-  reloadTimesAfterBooking$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(BookAppointmentActions.submitAppointmentSuccess),
-      withLatestFrom(this.store.select(BookAppointmentFeature.selectSelectedDate)),
-      map(([, selectedDate]) =>
-        selectedDate
-          ? BookAppointmentActions.selectDate({ date: selectedDate })
-          : BookAppointmentActions.loadTimesFailure(),
-      ),
-    ),
-  );
-
   notifyUserAfterBookingSuccess$ = createEffect(() =>
     this.actions$.pipe(
       ofType(BookAppointmentActions.submitAppointmentSuccess),
@@ -143,20 +132,44 @@ export class BookAppointmentEffects {
   sendConfirmationEmail$ = createEffect(() =>
     this.actions$.pipe(
       ofType(BookAppointmentActions.submitAppointmentSuccess),
-      withLatestFrom(this.store.select(BookAppointmentFeature.selectClientDetails)),
-      exhaustMap(([, clientDetails]) => {
-        if (!clientDetails?.email) return of();
+      withLatestFrom(
+        this.store.select(BookAppointmentFeature.selectClientDetails), 
+        this.store.select(BookAppointmentFeature.selectSelectedDate), 
+        this.store.select(BookAppointmentFeature.selectSelectedTime)),
+      exhaustMap(([, clientDetails, appointmentDate, appointmentTime]) => {
+        if (!clientDetails?.email) return of(BookAppointmentActions.confirmationEmailComplete());
+        let body = "";
+        if (!appointmentDate || !appointmentTime) {
+          body = `You\'re scheduled for a fifteen minute call with Samantha.`;
+        } else {
+          const startLabel = BookAppointmentUtils.formatTimeLabel(appointmentTime!.hour, appointmentTime!.minute);
+          const formattedDate = BookAppointmentUtils.formatSelectedDateText(new Date(appointmentDate!), { label: startLabel });
+          body = `You\'re scheduled for a fifteen minute call with Samantha on ${formattedDate}.`;
+        }
+
         return this.emailService.sendEmail({
           from: 'alisonjoyforster@gmail.com',
           to: clientDetails.email,
-          subject: 'TEST',
-          body: 'HELLO',
+          subject: 'Thank you for booking your appointment!',
+          body: body + " I look forward to connecting with you! If you have any questions ahead of time feel free to reply to this email.",
         }).pipe(
-          catchError(() => of())
+          catchError(() => of(null)),
+          map(() => BookAppointmentActions.confirmationEmailComplete())
         );
       })
+    )
+  );
+
+  reloadTimesAfterBooking$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(BookAppointmentActions.confirmationEmailComplete),
+      withLatestFrom(this.store.select(BookAppointmentFeature.selectSelectedDate)),
+      map(([, selectedDate]) =>
+        selectedDate
+          ? BookAppointmentActions.selectDate({ date: selectedDate })
+          : BookAppointmentActions.loadTimesFailure(),
+      ),
     ),
-    { dispatch: false }
   );
 
 }

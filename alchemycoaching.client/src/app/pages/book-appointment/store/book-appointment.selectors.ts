@@ -62,13 +62,7 @@ export interface ConfirmDialogViewModel {
 // Helpers
 // ---------------------------------------------------------------------------
 
-function formatTimeLabel(hour: number, minute: number): string {
-  const displayHour = hour % 12 === 0 ? 12 : hour % 12;
-  const amPm = hour < 12 ? 'AM' : 'PM';
-  return minute === 0
-    ? `${displayHour}:00 ${amPm}`
-    : `${displayHour}:${minute.toString().padStart(2, '0')}`;
-}
+
 
 function addMinutes(
   hour: number,
@@ -149,7 +143,7 @@ export const selectTimePickerViewModel = createSelector(
 
     const enrichedTimes: TimeSlotViewModel[] = times.map((slot, index) => ({
       ...slot,
-      label: formatTimeLabel(slot.hour, slot.minute),
+      label: BookAppointmentUtils.formatTimeLabel(slot.hour, slot.minute),
       isHourMark: slot.minute === 0,
       isStart: index === startIndex,
       isInRange: startIndex !== -1 && index >= startIndex && index < startIndex + slotsNeeded,
@@ -186,12 +180,12 @@ export const selectConfirmDialogViewModel = createSelector(
     let endTime = '';
     if (selectedTime && service) {
       const end = addMinutes(selectedTime.hour, selectedTime.minute, service.duration);
-      endTime = formatTimeLabel(end.hour, end.minute);
+      endTime = BookAppointmentUtils.formatTimeLabel(end.hour, end.minute);
     }
 
     let selectedDateText = '';
     if (selectedDateAsDate && selectedTime) {
-      const startLabel = formatTimeLabel(selectedTime.hour, selectedTime.minute);
+      const startLabel = BookAppointmentUtils.formatTimeLabel(selectedTime.hour, selectedTime.minute);
       selectedDateText = BookAppointmentUtils.formatSelectedDateText(selectedDateAsDate, {
         label: startLabel,
       });

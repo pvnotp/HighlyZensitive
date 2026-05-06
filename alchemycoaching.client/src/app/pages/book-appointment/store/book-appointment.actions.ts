@@ -16,5 +16,6 @@ export const BookAppointmentActions = createActionGroup({
     'Submit Appointment': props<{ note: string }>(),
     'Submit Appointment Success': emptyProps(),
     'Submit Appointment Failure': props<{ errorMessage: string }>(),
+    'Confirmation Email Complete': emptyProps(),
   },
 });

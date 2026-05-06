@@ -12,16 +12,11 @@ import { TimePickerStatus, TimeSlot } from '../store/book-appointment.state';
   templateUrl: './time-picker.component.html',
   styleUrl: './time-picker.component.scss'
 })
-export class TimePickerComponent implements OnInit {
+export class TimePickerComponent {
   private readonly store = inject(Store);
 
   readonly TimePickerStatus = TimePickerStatus;
   readonly vm$ = this.store.select(selectTimePickerViewModel);
-
-  ngOnInit(): void {
-    // Initial slot load is triggered by scheduler dispatching selectDate on init.
-    // Nothing to do here.
-  }
 
   onSlotSelected(slot: TimeSlotViewModel, isPanelDisabled: boolean): void {
     if (isPanelDisabled || slot.isBooked || !slot.isSelectable) {
