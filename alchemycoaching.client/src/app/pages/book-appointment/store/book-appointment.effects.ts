@@ -134,7 +134,7 @@ export class BookAppointmentEffects {
   notifyUserAfterBookingFailure$ = createEffect(() =>
     this.actions$.pipe(
       ofType(BookAppointmentActions.submitAppointmentFailure),
-      map(() => GlobalActions.notifyUser({ message: 'Something went wrong. Please try again.', duration: 4000, variant: 'warn' })),
+      map(({ errorMessage }) => GlobalActions.notifyUser({ message: errorMessage, duration: 4000, variant: 'warn' })),
     ),
   );
 }
