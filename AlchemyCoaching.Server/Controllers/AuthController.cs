@@ -7,7 +7,7 @@ namespace AlchemyCoaching.Server.Controllers
 {
     [Route("auth")]
     [ApiController]
-    public class AuthController(IAuthService authService, ILogger<AuthController> logger, GmailOAuthService gmailOAuthService) : ControllerBase
+    public class AuthController(IAuthService authService, GmailOAuthService gmailOAuthService) : ControllerBase
     {
         // GET: api/auth/email@email.com
         [HttpGet("{email}")]
@@ -40,7 +40,6 @@ namespace AlchemyCoaching.Server.Controllers
             }
             catch (InvalidOperationException)
             {
-                logger.LogWarning("Role lookup failed for user {UserId}; expected exactly one role.", id);
                 return NotFound();
             }
         }

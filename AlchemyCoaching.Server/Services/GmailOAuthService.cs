@@ -8,34 +8,23 @@ using System.Threading.Tasks;
 namespace AlchemyCoaching.Server.Services
 {
 
-    public class GmailOAuthService(IConfiguration config, IHttpClientFactory httpClientFactory, ILogger<GmailOAuthService> logger)
+    public class GmailOAuthService(IConfiguration config, IHttpClientFactory httpClientFactory)
     {
-        private readonly IConfiguration _config = config;
-        private readonly IHttpClientFactory _httpClientFactory = httpClientFactory;
-        private readonly ILogger<GmailOAuthService> _logger = logger;
-
         private string GetRedirectUri()
         {
             var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
-            _logger.LogInformation("ASPNETCORE_ENVIRONMENT is: {Env}", env);
-            string redirectUri;
             if (string.Equals(env, "Production", StringComparison.OrdinalIgnoreCase))
             {
-                redirectUri = "https://alchemycoaching-gacve7fsgmarengw.eastus2-01.azurewebsites.net/auth/oauthtoken";
+                return "https://alchemycoaching-gacve7fsgmarengw.eastus2-01.azurewebsites.net/auth/oauthtoken";
             }
-            else
-            {
-                redirectUri = "http://localhost:5287/auth/oauthtoken";
-            }
-            _logger.LogInformation("GetRedirectUri returning: {RedirectUri}", redirectUri);
-            return redirectUri;
+            return "http://localhost:5287/auth/oauthtoken";
         }
 
         public async Task<(TokenResponse? token, string errorJson)> ExchangeCodeForTokensAsync(string code)
         {
-            var clientId = _config["Gmail:ClientId"];
-            var clientSecret = _config["Gmail:ClientSecret"];
-            var httpClient = _httpClientFactory.CreateClient();
+            var clientId = config["Gmail:ClientId"];
+            var clientSecret = config["Gmail:ClientSecret"];
+            var httpClient = httpClientFactory.CreateClient();
 
             var redirectUri = GetRedirectUri();
 
