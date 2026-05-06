@@ -7,6 +7,7 @@
     <SpaRoot>..\alchemycoaching.client</SpaRoot>
     <SpaProxyLaunchCommand>npm start</SpaProxyLaunchCommand>
     <SpaProxyServerUrl>https://localhost:52809</SpaProxyServerUrl>
+    <UserSecretsId>97db1a89-2ed5-4868-aca1-bb4e8a626a89</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
