@@ -23,7 +23,7 @@ namespace AlchemyCoaching.Server.Controllers
         }
 
         [HttpPost("events")]
-        public async Task<ActionResult<CalendarEventDto>> CreateEvent([FromBody] CreateEventRequest request)
+        public async Task<ActionResult<GoogleCalendarEventDto>> CreateEvent([FromBody] CreateEventRequest request)
         {
             try
             {

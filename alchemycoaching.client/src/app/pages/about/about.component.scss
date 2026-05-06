@@ -7,7 +7,6 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: clamp(1rem, 3vw, 2rem);
   box-sizing: border-box;
 }
 
@@ -61,7 +60,7 @@
 .content-card {
   position: relative;
   z-index: 3;
-  background-color: vars.$surface-overlay;
+  background-color: vars.$panel-overlay;
   color: #000;
   width: 100%;
   box-sizing: border-box;

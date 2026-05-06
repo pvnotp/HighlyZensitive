@@ -1,0 +1,32 @@
+<div class="events-container">
+	<div class="background-layer" aria-hidden="true"></div>
+	<div class="overlay-layer" aria-hidden="true"></div>
+	<div class="events-content">
+		<div class="display-font title">Upcoming Events</div>
+		<!-- <ng-container *ngIf="loading">Loading events...</ng-container>
+		<ng-container *ngIf="error">{{ error }}</ng-container> -->
+		@if(!loading && !error){
+		<div class="card-container" > 
+			@if(events.length > 0){
+				@for(event of events; track event.id){
+					<div class="event-card default-font">
+						<div class="event-title">{{ event.summary }}</div>
+						<div class="event-datetime">
+							{{ event.start | date:'fullDate' }} {{ event.start | date:'shortTime' }}
+							@if(event.end){
+								- {{ event.end | date:'shortTime' }}
+							}
+						</div>
+						@if(!event.description){
+							<div class="event-status">{{ event.description }}</div>
+						}
+					</div>
+				}
+			}
+			@if(events.length == 0){
+				<div class="no-events display-font">No upcoming events found.</div>
+			}
+		</div> 
+		}
+	</div>
+</div>

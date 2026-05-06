@@ -19,7 +19,7 @@ namespace AlchemyCoaching.Server.Services
             ApplicationName = "AlchemyCoaching"
         });
 
-        public async Task<IList<CalendarEventDto>> GetEventsAsync(Calendar calendar, DateTime? from, DateTime? to)
+        public async Task<IList<GoogleCalendarEventDto>> GetEventsAsync(Calendar calendar, DateTime? from, DateTime? to)
         {
 
 
@@ -41,7 +41,7 @@ namespace AlchemyCoaching.Server.Services
             var items = result.Items ?? [];
 
             return items
-                .Select(e => new CalendarEventDto
+                .Select(e => new GoogleCalendarEventDto
                 {
                     Id = e.Id,
                     Summary = e.Summary,
@@ -56,7 +56,7 @@ namespace AlchemyCoaching.Server.Services
                 .ToList();
         }
 
-        public async Task<CalendarEventDto> CreateEventAsync(CreateEventRequest request)
+        public async Task<GoogleCalendarEventDto> CreateEventAsync(CreateEventRequest request)
         {
             if (request.End <= request.Start)
             {
@@ -74,7 +74,7 @@ namespace AlchemyCoaching.Server.Services
 
             var created = await _calendarService.Events.Insert(newEvent, GetCalendarId(request.Calendar)).ExecuteAsync();
 
-            return new CalendarEventDto
+            return new GoogleCalendarEventDto
             {
                 Id = created.Id,
                 Summary = created.Summary,
@@ -83,6 +83,7 @@ namespace AlchemyCoaching.Server.Services
                 HtmlLink = created.HtmlLink,
                 Status = created.Status,
                 IsAllDay = !string.IsNullOrWhiteSpace(created.Start?.Date),
+                Description = created.Description,
             };
         }
 
@@ -91,7 +92,7 @@ namespace AlchemyCoaching.Server.Services
             {
                 Calendar.Availability => configuration["GoogleCalendar:CalendarId"]
                     ?? throw new InvalidOperationException("GoogleCalendar:CalendarId is not configured."),
-                Calendar.Events => configuration["GoogleCalendar:EventCalendarId"]
+                Calendar.Events => configuration["GoogleCalendar:CalendarId"]
                     ?? throw new InvalidOperationException("GoogleCalendar:CalendarId is not configured."),
                 _ => throw new ArgumentException("Invalid calendar specified.")
             };

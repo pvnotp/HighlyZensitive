@@ -7,6 +7,8 @@ export interface CalendarEvent {
   summary: string;
   start: string;
   end: string;
+  description?: string;
+  location?: string;
   isAllDay: boolean;
   status: string;
 }

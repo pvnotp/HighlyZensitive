@@ -2,8 +2,8 @@ namespace AlchemyCoaching.Server.Services
 {
     public interface IGoogleCalendarService
     {
-        Task<IList<CalendarEventDto>> GetEventsAsync(Calendar calendar, DateTime? from, DateTime? to);
-        Task<CalendarEventDto> CreateEventAsync(CreateEventRequest request);
+        Task<IList<GoogleCalendarEventDto>> GetEventsAsync(Calendar calendar, DateTime? from, DateTime? to);
+        Task<GoogleCalendarEventDto> CreateEventAsync(CreateEventRequest request);
     }
 
     public enum Calendar
@@ -12,7 +12,7 @@ namespace AlchemyCoaching.Server.Services
         Events
     }
 
-    public sealed class CalendarEventDto
+    public sealed class GoogleCalendarEventDto
     {
         public string? Id { get; init; }
         public string? Summary { get; init; }

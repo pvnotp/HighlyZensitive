@@ -4,7 +4,7 @@
 	width: 100%;
 	height: clamp(18.75rem, 31vw, 20.75rem);
 	border-radius: vars.$radius-sm;
-	background: vars.$surface-overlay;
+	background: vars.$panel-overlay;
 	overflow: hidden;
 }
 
