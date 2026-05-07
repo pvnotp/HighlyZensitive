@@ -11,14 +11,20 @@
 				@for(event of events; track event.id){
 					<div class="event-card default-font">
 						<div class="event-title">{{ event.summary }}</div>
-						<div class="event-datetime">
-							{{ event.start | date:'fullDate' }} {{ event.start | date:'shortTime' }}
+						<div>
+							{{ event.start | date:'fullDate' }} 
+						</div>
+						<div>
+							{{ event.start | date:'shortTime' }}
 							@if(event.end){
 								- {{ event.end | date:'shortTime' }}
 							}
 						</div>
-						@if(!event.description){
-							<div class="event-status">{{ event.description }}</div>
+						@if(event.location){
+							<div>{{ event.location }}</div>
+						}
+						@if(event.description){
+							<div>{{ event.description }}</div>
 						}
 					</div>
 				}
