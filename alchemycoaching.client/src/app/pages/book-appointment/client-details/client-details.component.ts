@@ -2,6 +2,7 @@ import { Component, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { BookAppointmentActions } from '../store/book-appointment.actions';
+import { BookAppointmentFeature } from '../store/book-appointment.reducer';
 
 @Component({
   selector: 'app-client-details',
@@ -14,12 +15,16 @@ export class ClientDetailsComponent {
   private readonly store = inject(Store);
   private readonly formBuilder = inject(FormBuilder);
 
+  readonly clientDetails = this.store.selectSignal(BookAppointmentFeature.selectClientDetails);
+
   readonly form = this.formBuilder.group({
-    name: ['', [Validators.required]],
-    email: ['', [Validators.required, Validators.email]],
-    phone: ['', [Validators.required, Validators.pattern(/^\(\d{3}\) \d{3}-\d{4}$/)]],
+    name: [this.clientDetails()?.name ?? '', [Validators.required]],
+    email: [this.clientDetails()?.email ?? '', [Validators.required, Validators.email]],
+    phone: [this.clientDetails()?.phone ?? '', [Validators.required, Validators.pattern(/^\(\d{3}\) \d{3}-\d{4}$/)]],
   });
 
+
+  
   onFormChanged(): void {
     const { name, email, phone } = this.form.getRawValue();
     const trimmedName = (name ?? '').trim();
