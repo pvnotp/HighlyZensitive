@@ -4,13 +4,14 @@ import { RouterOutlet } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { NavBarComponent } from './global/nav-bar/nav-bar.component';
 import { NotificationComponent } from './global/notification/notification.component';
+import { NewsletterDialogComponent } from './global/newsletter-dialog/newsletter-dialog.component';
 
 
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  imports: [RouterOutlet, NavBarComponent, NotificationComponent],
+  imports: [RouterOutlet, NavBarComponent, NotificationComponent, NewsletterDialogComponent],
   standalone: true,
   styleUrl: './app.component.css'
 })

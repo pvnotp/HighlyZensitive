@@ -1,0 +1,65 @@
+@if (visible) {
+	<aside class="newsletter-dialog default-font" role="dialog" aria-labelledby="newsletter-title" aria-modal="false">
+		<button
+			type="button"
+			class="close-button"
+			aria-label="Close newsletter dialog"
+			(click)="close(true)">
+			&times;
+		</button>
+
+		@if (isSuccess) {
+			<p class="success-message">Thank you for joining!</p>
+		} @else {
+			<h2 id="newsletter-title">Sign up for our newsletter</h2>
+
+			<form #newsletterForm="ngForm" (ngSubmit)="submit()">
+				<label for="newsletter-first-name">First Name</label>
+				<input
+					id="newsletter-first-name"
+					name="firstName"
+					type="text"
+					[(ngModel)]="firstName"
+					required />
+
+				<label for="newsletter-last-name">Last Name</label>
+				<input
+					id="newsletter-last-name"
+					name="lastName"
+					type="text"
+					[(ngModel)]="lastName"
+					required />
+
+				<label for="newsletter-email">Email</label>
+				<input
+					id="newsletter-email"
+					name="email"
+					type="email"
+					[(ngModel)]="email"
+					required />
+
+				@if (submitError) {
+					<p class="submit-error">{{ submitError }}</p>
+				}
+
+				<button
+					type="submit"
+					class="button small-button submit-button"
+					[disabled]="newsletterForm.invalid || isSubmitting">
+					{{ isSubmitting ? 'Signing Up...' : 'Sign Up' }}
+				</button>
+			</form>
+		}
+	</aside>
+} @else if (hasDismissedWithoutSignup && !hasSignedUp) {
+	<button
+		type="button"
+		class="reopen-button"
+		aria-label="Open newsletter dialog"
+		(click)="reopen()">
+		<svg aria-hidden="true" viewBox="0 0 24 24" focusable="false">
+			<rect x="3" y="6" width="18" height="12" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.8"></rect>
+			<path d="M4 7l8 7 8-7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
+		</svg>
+	</button>
+}

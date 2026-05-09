@@ -8,6 +8,7 @@ const PROXY_CONFIG = [
     context: [
       "/calendar",
       "/gmail",
+      "/newsletter",
     ],
     target,
     secure: false

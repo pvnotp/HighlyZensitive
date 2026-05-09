@@ -1,0 +1,116 @@
+@use '../../../style-variables.scss' as vars;
+
+:host {
+	position: fixed;
+	right: 1rem;
+	bottom: 1rem;
+	z-index: 50;
+}
+
+.newsletter-dialog {
+	position: relative;
+	width: min(24rem, calc(100vw - 2rem));
+	padding: 1rem;
+	min-height: 11rem;
+	border: 1px solid vars.$medium;
+	border-radius: vars.$radius-sm;
+	background-color: vars.$dark;
+	color: vars.$medium;
+	box-shadow: 0 0.7rem 2rem rgba(0, 0, 0, 0.3);
+}
+
+.success-message {
+	min-height: 9rem;
+	display: grid;
+	place-items: center;
+	margin: 0;
+	text-align: center;
+	font-size: 1.15rem;
+	font-weight: 600;
+	color: vars.$medium;
+}
+
+h2 {
+	margin: 0 1.6rem 0.9rem 0;
+	font-size: 1.1rem;
+	color: vars.$medium;
+}
+
+form {
+	display: grid;
+	gap: 0.45rem;
+}
+
+label {
+	font-size: 0.9rem;
+	color: vars.$medium;
+}
+
+input {
+	width: 100%;
+	border: 1px solid vars.$medium;
+	border-radius: vars.$radius-sm;
+	background-color: vars.$light;
+	color: vars.$dark;
+	padding: 0.5rem 0.55rem;
+}
+
+
+.submit-button {
+	justify-self: end;
+	width: auto;
+	margin: 1.25rem 0.35rem 0.35rem 0;
+}
+
+.submit-button:disabled {
+	opacity: 0.6;
+	cursor: not-allowed;
+}
+
+.close-button {
+	position: absolute;
+	top: 0.25rem;
+	right: 0.3rem;
+	border: 0;
+	background: transparent;
+	color: vars.$medium;
+	font-size: 1.2rem;
+	line-height: 1;
+	padding: 0.2rem 0.35rem;
+}
+
+.submit-error {
+	margin: 0.2rem 0 0;
+	font-size: 0.85rem;
+	color: vars.$warn;
+}
+
+.reopen-button {
+	width: 2.6rem;
+	height: 2.6rem;
+	display: inline-grid;
+	place-items: center;
+	border-radius: 50%;
+	border: 1px solid vars.$medium;
+	background-color: vars.$dark;
+	color: vars.$medium;
+	font-size: 1.05rem;
+	line-height: 1;
+	box-shadow: 0 0.55rem 1.2rem rgba(0, 0, 0, 0.28);
+}
+
+.reopen-button svg {
+	width: 1.2rem;
+	height: 1.2rem;
+}
+
+@media (max-width: 640px) {
+	:host {
+		right: 0.75rem;
+		bottom: 0.75rem;
+	}
+
+	.newsletter-dialog {
+		width: min(24rem, calc(100vw - 1.5rem));
+	}
+}

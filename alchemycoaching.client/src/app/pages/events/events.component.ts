@@ -5,7 +5,7 @@ import { DatePipe, NgFor, NgIf } from '@angular/common';
 @Component({
   selector: 'app-events',
   standalone: true,
-  imports: [DatePipe, NgIf, NgFor],
+  imports: [DatePipe],
   templateUrl: './events.component.html',
   styleUrl: './events.component.scss'
 })
