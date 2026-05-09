@@ -14,27 +14,11 @@
 			<h2 id="newsletter-title">Sign up for our newsletter</h2>
 
 			<form #newsletterForm="ngForm" (ngSubmit)="submit()">
-				<label for="newsletter-first-name">First Name</label>
-				<input
-					id="newsletter-first-name"
-					name="firstName"
-					type="text"
-					[(ngModel)]="firstName"
-					required />
-
-				<label for="newsletter-last-name">Last Name</label>
-				<input
-					id="newsletter-last-name"
-					name="lastName"
-					type="text"
-					[(ngModel)]="lastName"
-					required />
-
-				<label for="newsletter-email">Email</label>
 				<input
 					id="newsletter-email"
 					name="email"
 					type="email"
+					placeholder="Email"
 					[(ngModel)]="email"
 					required />
 

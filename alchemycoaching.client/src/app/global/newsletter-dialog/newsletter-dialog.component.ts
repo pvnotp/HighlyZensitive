@@ -79,7 +79,7 @@ export class NewsletterDialogComponent implements OnInit, OnDestroy {
     this.submitError = '';
     this.isSubmitting = true;
 
-    this.newsletterService.subscribeToList(this.email, this.firstName, this.lastName).subscribe({
+    this.newsletterService.subscribeToList(this.email).subscribe({
       next: () => {
         this.isSubmitting = false;
         this.hasSignedUp = true;

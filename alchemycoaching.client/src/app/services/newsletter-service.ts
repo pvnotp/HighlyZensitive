@@ -25,12 +25,12 @@ export class NewsletterService {
 		return this.http.post<void>(this.apiUrl, request);
 	}
 
-	subscribeToList(email: string, fName: string, lName: string, listId = 2): Observable<void> {
+	subscribeToList(email: string, listId = 2): Observable<void> {
 		const request: NewsletterSubscribeRequest = {
 			email,
 			attributes: {
-				fName,
-				lName
+				fName: "",
+				lName: ""
 			},
 			listIds: [listId],
 			emailBlacklisted: false,
