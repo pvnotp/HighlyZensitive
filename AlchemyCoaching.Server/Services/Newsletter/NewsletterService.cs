@@ -5,10 +5,42 @@ using System.Text.Json.Serialization;
 
 namespace AlchemyCoaching.Server.Services
 {
-    public class NewsletterService(IConfiguration config, IHttpClientFactory httpClientFactory)
+    public class NewsletterService(IConfiguration config, IHttpClientFactory httpClientFactory, GmailService gmailService)
     {
         private const string BrevoContactsUrl = "https://api.brevo.com/v3/contacts";
 
+        public async Task<NewsletterSubscriptionResult> SendSignupEmailAsync(string email)
+        {
+            var siteUrl = config["SiteUrls:Api"];
+            if (string.IsNullOrWhiteSpace(siteUrl))
+            {
+                return new NewsletterSubscriptionResult(false, "Missing SiteUrl configuration.");
+            }   
+            var emailBody = NewsletterEmailTemplate.GetEmailBody(email, siteUrl);
+            var success = await gmailService.SendEmailAsync(
+                from: "alisonjoyforster@gmail.com",
+                to: email,
+                subject: "The Path to Purpose",
+                body: emailBody
+            );
+
+            return new NewsletterSubscriptionResult(success, success ? null : "Failed to send confirmation email.");
+        }
+
+        public async Task<NewsletterSubscriptionResult> ConfirmSubscribeAsync(string email)
+        {
+            var request = new NewsletterSubscribeRequest(
+                Email: email,
+                Attributes: new NewsletterAttributes(FName: "", LName: ""),
+                ListIds: new[] { 2 },
+                EmailBlacklisted: false,
+                SmsBlacklisted: false,
+                UpdateEnabled: true
+            );
+
+            return await SubscribeAsync(request);
+        }
+        
         public async Task<NewsletterSubscriptionResult> SubscribeAsync(NewsletterSubscribeRequest request)
         {
             var apiKey = config["Brevo-Key"];
