@@ -1,0 +1,73 @@
+<div class="services-container">
+  <div class="background-layer" aria-hidden="true"></div>
+  <div class="overlay-layer" aria-hidden="true"></div>
+  <div class="card-container">
+    <div class="intro-panel">
+      <p>The first step in your journey is to <a routerLink="/scheduler" [queryParams]="{ type: 'vibe check', duration: '15' }" class="button small-button">get a vibe check</a> and discuss what your individual path to happiness looks like.  Here are some of the ways I can help you along the way.</p>
+    </div>
+    <div class="panels-container">
+      <div class="collapsible-panel coaching-panel">
+        <div class="collapsible-panel-title" (click)="togglePanel(0)" [class.expanded]="expandedPanels[0]">
+          <span>Coaching</span>
+          <span class="chevron">▼</span>
+        </div>
+        <div class="collapsible-panel-content" [class.collapsed]="!expandedPanels[0]">
+          <div class="sub-panels-container">
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+            <div class="sub-panel">
+              <div class="sub-panel-title" (click)="toggleSubPanel(0)" [class.expanded]="expandedSubPanels[0]">
+                <span>Accountability Coaching</span>
+                <span class="chevron">▼</span>
+              </div>
+              <div class="sub-panel-content" [class.collapsed]="!expandedSubPanels[0]">
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>
+              </div>
+            </div>
+
+            <div class="sub-panel">
+              <div class="sub-panel-title" (click)="toggleSubPanel(1)" [class.expanded]="expandedSubPanels[1]">
+                <span>Life Path Coaching</span>
+                <span class="chevron">▼</span>
+              </div>
+              <div class="sub-panel-content" [class.collapsed]="!expandedSubPanels[1]">
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>
+              </div>
+            </div>
+
+            <div class="sub-panel">
+              <div class="sub-panel-title" (click)="toggleSubPanel(2)" [class.expanded]="expandedSubPanels[2]">
+                <span>Another Kind of Coaching</span>
+                <span class="chevron">▼</span>
+              </div>
+              <div class="sub-panel-content" [class.collapsed]="!expandedSubPanels[2]">
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="right-panels-column">
+        <div class="collapsible-panel">
+          <div class="collapsible-panel-title" (click)="togglePanel(1)" [class.expanded]="expandedPanels[1]">
+            <span>Toxicology Audits</span>
+            <span class="chevron">▼</span>
+          </div>
+          <div class="collapsible-panel-content" [class.collapsed]="!expandedPanels[1]">
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>
+          </div>
+        </div>
+
+        <div class="collapsible-panel">
+          <div class="collapsible-panel-title" (click)="togglePanel(2)" [class.expanded]="expandedPanels[2]">
+            <span>Energy Work</span>
+            <span class="chevron">▼</span>
+          </div>
+          <div class="collapsible-panel-content" [class.collapsed]="!expandedPanels[2]">
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

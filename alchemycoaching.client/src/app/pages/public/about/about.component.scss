@@ -61,7 +61,7 @@
   position: relative;
   z-index: 3;
   background-color: vars.$panel-overlay;
-  color: #000;
+  color: vars.$dark;
   width: 100%;
   box-sizing: border-box;
   margin: 0;
@@ -71,7 +71,7 @@
 
 .content-card p {
   line-height: 1.8;
-  font-size: clamp(1rem, 1.8vw, 1rem);
+  font-size: 1rem;
   letter-spacing: 0.04em;
 }
 

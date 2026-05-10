@@ -7,11 +7,16 @@ import { provideState } from '@ngrx/store';
 import { provideEffects } from '@ngrx/effects';
 import { BookAppointmentFeature } from './pages/public/book-appointment/store/book-appointment.reducer';
 import { BookAppointmentEffects } from './pages/public/book-appointment/store/book-appointment.effects';
+import { ServicesComponent } from './pages/public/services/services.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
   { path: 'about', component: AboutComponent },
   { path: 'events', component: EventsComponent },
+  {
+    path: 'newsletter/confirmed',
+    loadComponent: () => import('./pages/public/newsletter-confirmed/newsletter-confirmed.component').then(m => m.NewsletterConfirmedComponent)
+  },
   {
     path: 'scheduler',
     component: SchedulerComponent,
@@ -20,9 +25,6 @@ export const routes: Routes = [
       provideEffects(BookAppointmentEffects),
     ],
   },
-  {
-    path: 'newsletter/confirmed',
-    loadComponent: () => import('./pages/public/newsletter-confirmed/newsletter-confirmed.component').then(m => m.NewsletterConfirmedComponent)
-  },
+  { path: 'services', component: ServicesComponent },
   { path: '**', component: HomeComponent, pathMatch: 'full' }
 ]
