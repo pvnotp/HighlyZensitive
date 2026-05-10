@@ -240,9 +240,9 @@
 
 @media (min-width: 1024px) {
   .card-container {
-    --panel-gap: 1.5rem;
-    --panel-content-max-height: clamp(8rem, 24vh, 13rem);
-    --sub-panel-content-max-height: clamp(6rem, 18vh, 9rem);
+    --panel-gap: clamp(0.1rem, 2vh, 1.5rem);
+    --panel-content-max-height: clamp(2rem, 18vh, 13rem);
+    --sub-panel-content-max-height: clamp(2.5rem, 12vh, 9rem);
     width: 90vw;
     max-height: calc(100% - 2rem);
     overflow: hidden;
