@@ -1,0 +1,104 @@
+@use '../../../../global-styles.scss' as *;
+@use '../../../../style-variables.scss' as vars;
+
+.home-container {
+  position: relative;
+  flex: 1;
+  overflow: hidden;
+}
+
+.background-layer,
+.overlay-layer {
+  position: absolute;
+  inset: 0;
+}
+
+.background-layer {
+  z-index: 1;
+  background-image: url('./home-background.jpg');
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.overlay-layer {
+  z-index: 2;
+  background-color: vars.$page-overlay;
+}
+
+.home-content {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.button-container {
+  z-index: 4;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  container-type: inline-size;
+  gap: 0.25rem;
+  width: clamp(18rem, 32vw, 27rem);
+}
+
+.button-row {
+  display: flex;
+  width: 100%;
+  gap: 0.25rem;
+}
+
+.button-row .button {
+  flex: 1 1 auto;
+  min-width: 0;
+  width: auto;
+  text-align: center;
+}
+
+.title-container {
+  z-index: 4;
+  pointer-events: none;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  row-gap: 0.5em;
+  column-gap: 1em;
+  width: clamp(18rem, 32vw, 27rem);
+}
+
+.title {
+  color: #fff;
+  line-height: 1;
+  font-size: clamp(4rem, 8vw, 6rem);
+}
+
+.large-font {
+  display: inline-block;
+  font-size: 1em;
+  line-height: 1;
+  transform: scale(1.28);
+  transform-origin: 50% 72%;
+}
+
+.description{
+  color: #fff;
+  text-align: center;
+  line-height: 1;
+  font-size: clamp(2.5rem, 5vw, 3.75rem);
+  width: clamp(18rem, 32vw, 27rem);
+  padding-bottom: 1rem;
+}
+
+@media (max-width: 800px) {
+  .home-content {
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+  }
+}
