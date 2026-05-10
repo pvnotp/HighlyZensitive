@@ -20,5 +20,9 @@ export const routes: Routes = [
       provideEffects(BookAppointmentEffects),
     ],
   },
+  {
+    path: 'newsletter/confirmed',
+    loadComponent: () => import('./pages/newsletter-confirmed/newsletter-confirmed.component').then(m => m.NewsletterConfirmedComponent)
+  },
   { path: '**', component: HomeComponent, pathMatch: 'full' }
 ]
