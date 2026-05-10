@@ -22,9 +22,6 @@ export class NewsletterDialogComponent implements OnInit, OnDestroy {
   hasSignedUp = false;
   hasDismissedWithoutSignup = false;
   submitError = '';
-
-  firstName = '';
-  lastName = '';
   email = '';
 
   ngOnInit(): void {
@@ -79,7 +76,7 @@ export class NewsletterDialogComponent implements OnInit, OnDestroy {
     this.submitError = '';
     this.isSubmitting = true;
 
-    this.newsletterService.subscribeToList(this.email).subscribe({
+    this.newsletterService.requestSignupEmail(this.email).subscribe({
       next: () => {
         this.isSubmitting = false;
         this.hasSignedUp = true;
