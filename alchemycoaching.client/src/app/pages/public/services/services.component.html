@@ -55,8 +55,8 @@
         </div>
       </div>
 
-      <div class="right-panels-column">
-        <div class="collapsible-panel">
+      <div class="right-panels-column" [class.compact-mode]="shortDesktop()">
+        <div class="collapsible-panel" [class.compact-collapsed]="shortDesktop() && !expandedPanels[1]">
           <div class="collapsible-panel-title" (click)="togglePanel(1)" [class.expanded]="expandedPanels[1]">
             <span>Toxicology Audits</span>
             <span class="chevron">▼</span>
@@ -68,7 +68,7 @@
           </div>
         </div>
 
-        <div class="collapsible-panel">
+        <div class="collapsible-panel" [class.compact-collapsed]="shortDesktop() && !expandedPanels[2]">
           <div class="collapsible-panel-title" (click)="togglePanel(2)" [class.expanded]="expandedPanels[2]">
             <span>Energy Work</span>
             <span class="chevron">▼</span>

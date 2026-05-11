@@ -33,8 +33,8 @@
 
 .card-container {
   --panel-gap: 1rem;
-  --services-text-lg: clamp(1.02rem, 0.56rem + 1.05cqi, 1.22rem);
-  --services-text-md: clamp(0.94rem, 0.5rem + 0.85cqi, 1.08rem);
+  --services-text-lg: clamp(0.88rem, 2dvh, 1.4rem);
+  --services-text-md: clamp(0.88rem, 1.7dvh, 1.2rem);
   --services-text-sm: clamp(0.88rem, 0.44rem + 0.7cqi, 0.98rem);
   --panel-title-height: calc((var(--services-text-lg) * 1.4) + 1.5rem);
   --panel-content-max-height: clamp(10rem, 28vh, 15rem);
@@ -112,7 +112,7 @@
   user-select: none;
 
   .chevron {
-    transition: transform 0.3s ease;
+    transition: transform 0.5s ease;
     display: inline-block;
   }
 
@@ -200,7 +200,7 @@
   user-select: none;
 
   .chevron {
-    transition: transform 0.3s ease;
+    transition: transform 0.5s ease;
     display: inline-block;
   }
 
@@ -323,5 +323,34 @@
     overflow-y: auto;
     scrollbar-width: thin;
     scrollbar-color: rgba(0, 43, 33, 0.2) transparent;
+  }
+
+  // Compact mode: right panels become exclusive-toggle collapsible when viewport is short
+  .right-panels-column.compact-mode {
+    .collapsible-panel {
+      flex: 1 1 0px;
+      overflow: clip;
+      transition: flex-grow 0.5s ease, flex-basis 0.5s ease;
+
+      &.compact-collapsed {
+        flex: 0 0 var(--panel-title-height);
+      }
+
+      &-title {
+        cursor: pointer;
+        pointer-events: auto;
+        flex-shrink: 0;
+
+        .chevron {
+          display: inline-block;
+        }
+      }
+    }
+
+    .collapsible-panel-content-wrapper {
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(0, 43, 33, 0.2) transparent;
+    }
   }
 }
