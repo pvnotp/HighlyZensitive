@@ -121,17 +121,26 @@
 }
 
 .collapsible-panel-content {
-  padding: 1rem;
+  display: grid;
+  grid-template-rows: 1fr;
+  transition: grid-template-rows 1s ease;
+  overflow: hidden;
   color: vars.$dark;
   font-family: 'Tenor Sans', sans-serif;
-  animation: expandPanel 0.3s ease;
-  overflow-x: hidden;
-  overflow-y: auto;
+  text-align: left;
+
+  &.collapsed {
+    grid-template-rows: 0fr;
+  }
+}
+
+.collapsible-panel-content-wrapper {
+  min-height: 0;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   gap: 0.75rem;
-  text-align: left;
   scrollbar-width: thin;
   scrollbar-color: rgba(0, 43, 33, 0.2) transparent;
 
@@ -141,22 +150,8 @@
     font-size: var(--services-text-sm);
   }
 
-  &.collapsed {
-    max-height: 0;
-    padding: 0 1rem;
-    opacity: 0;
-    overflow: hidden;
-  }
-}
-
-@keyframes expandPanel {
-  from {
-    opacity: 0;
-    max-height: 0;
-  }
-  to {
-    opacity: 1;
-    max-height: 500px;
+  > p {
+    padding: 1rem;
   }
 }
 
@@ -179,6 +174,7 @@
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
+  padding: 1rem;
 }
 
 .sub-panel {
@@ -213,28 +209,31 @@
 }
 
 .sub-panel-content {
-  padding: 0.75rem;
+  display: grid;
+  grid-template-rows: 1fr;
+  transition: grid-template-rows 1s ease;
+  overflow: hidden;
   color: vars.$dark;
   font-family: 'Tenor Sans', sans-serif;
-  animation: expandPanel 0.3s ease;
-  overflow-x: hidden;
-  overflow-y: hidden;
+  text-align: left;
+
+  &.collapsed {
+    grid-template-rows: 0fr;
+  }
+}
+
+.sub-panel-content-wrapper {
+  min-height: 0;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  text-align: left;
 
   p {
     margin: 0;
     line-height: 1.6;
     font-size: var(--services-text-sm);
-  }
-
-  &.collapsed {
-    max-height: 0;
-    padding: 0 0.75rem;
-    opacity: 0;
-    overflow: hidden;
+    padding: 0.75rem;
   }
 }
 
@@ -290,15 +289,13 @@
     }
 
     &-content {
-      max-height: var(--panel-content-max-height);
-      opacity: 1;
       padding: 1rem;
       flex: 1;
       min-height: 0;
+      overflow-y: auto;
+      overflow-x: hidden;
 
       &.collapsed {
-        max-height: var(--panel-content-max-height);
-        opacity: 1;
         padding: 1rem;
         overflow-y: auto;
         overflow-x: hidden;
@@ -306,8 +303,15 @@
     }
   }
 
-  .coaching-panel .collapsible-panel-content,
-  .coaching-panel .collapsible-panel-content.collapsed {
-    max-height: calc((var(--panel-content-max-height) * 2) + var(--panel-gap) + var(--panel-title-height));
+  .collapsible-panel-content-wrapper {
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(0, 43, 33, 0.2) transparent;
+  }
+
+  .sub-panel-content-wrapper {
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(0, 43, 33, 0.2) transparent;
   }
 }
