@@ -14,7 +14,7 @@
   align-items: center;
   background-color: vars.$dark;
   color: vars.$light;
-  min-height: 50px;
+  font-size: clamp(12px, 1.8vh, 16px);
   padding: 1em;
   position: sticky;
   top: 0;
@@ -65,29 +65,26 @@ a.active {
 @media (max-width: 900px) {
   .top-nav {
     position: relative;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    padding-right: 1em;
   }
 
   .hamburger-box {
     position: absolute;
-    top: 50%;
+    top: 1em;
     right: 1em;
-    transform: translateY(-50%);
     display: inline-block;
-    width: 40px;
-    height: 35px;
-  }
-
-  .top-nav.dropdown .hamburger-box {
-    top: 10.5px;
-    transform: none;
+    width: 2.5em;
+    height: 2.2em;
   }
 
   .hamburger-inner,
   .hamburger-inner::before,
   .hamburger-inner::after {
     position: absolute;
-    width: 34px;
-    height: 4px;
+    width: 2.125em;
+    height: 0.25em;
     border-radius: vars.$radius-sm;
     background-color: vars.$light;
     content: '';
@@ -97,49 +94,48 @@ a.active {
   .hamburger-inner {
     top: 50%;
     left: 0;
-    margin-top: -2px;
+    margin-top: -0.125em;
   }
 
   .hamburger-inner::before {
-    top: -10px;
+    top: -0.625em;
     left: 0;
   }
 
   .hamburger-inner::after {
-    top: 10px;
+    top: 0.625em;
     left: 0;
   }
 
-  .top-nav {
-    align-items: flex-start;
-    transition: height 400ms cubic-bezier(0.23, 1, 0.32, 1);
-    padding-right: 3.5rem;
+  .top-nav > .title {
+    max-width: calc(100% - 3.5em);
   }
 
   .top-nav > .menu {
-    display: none;
+    display: flex;
     flex-direction: column;
     align-items: center;
     width: 100%;
-    margin-top: 0.5rem;
+    margin-top: 0.5em;
     background: vars.$dark;
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: max-height 500ms cubic-bezier(0.23, 1, 0.32, 1), opacity 200ms ease;
   }
 
   .top-nav.dropdown > .title {
     display: none;
   }
 
-  .top-nav.dropdown {
-    padding-right: 1em;
-  }
-
   .top-nav.dropdown > .menu {
-    display: flex;
+    max-height: 20em;
+    opacity: 1;
   }
 
-  .top-nav.dropdown > .menu > li {
+  .top-nav > .menu > li {
     margin: 0;
-    height: 30px;
+    height: 2em;
     display: flex;
     align-items: center;
     justify-content: center;
