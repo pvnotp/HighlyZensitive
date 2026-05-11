@@ -15,7 +15,7 @@
 }
 
 .background-layer {
-  position: absolute;
+  position: fixed;
   inset: 0;
   z-index: 1;
   background-image: url('./scheduler-background.jpg');
@@ -25,7 +25,7 @@
 }
 
 .overlay-layer {
-  position: absolute;
+  position: fixed;
   inset: 0;
   z-index: 2;
   background-color: rgba(4, 61, 2, 0.322);

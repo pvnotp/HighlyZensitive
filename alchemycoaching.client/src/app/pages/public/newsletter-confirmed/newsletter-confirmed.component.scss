@@ -22,12 +22,9 @@
 .background-layer {
   z-index: 1;
   background-image: url('./newsletter-confirmed-background.jpg');
-  background-position: left top;
+  background-position: left center;
   background-repeat: no-repeat;
   background-size: contain;
-  width: 100vw;
-  height: 100vh;
-  min-height: 100dvh;
 }
 
 .overlay-layer {
