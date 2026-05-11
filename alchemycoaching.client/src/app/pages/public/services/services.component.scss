@@ -4,11 +4,12 @@
   position: relative;
   flex: 1;
   min-height: 0;
-  overflow: hidden;
+  height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
   box-sizing: border-box;
+  overflow: hidden;
 }
 
 .background-layer,
@@ -48,7 +49,7 @@
   align-items: center;
   text-align: center;
   container-type: inline-size;
-  max-height: calc(100vh - 2rem);
+  max-height: calc(100% - 2rem);
   overflow: hidden;
   overflow-y: auto;
   scrollbar-width: thin;
@@ -123,7 +124,7 @@
 .collapsible-panel-content {
   display: grid;
   grid-template-rows: 1fr;
-  transition: grid-template-rows 1s ease;
+  transition: grid-template-rows 0.5s ease;
   overflow: hidden;
   color: vars.$dark;
   font-family: 'Tenor Sans', sans-serif;
@@ -211,7 +212,7 @@
 .sub-panel-content {
   display: grid;
   grid-template-rows: 1fr;
-  transition: grid-template-rows 1s ease;
+  transition: grid-template-rows 0.5s ease;
   overflow: hidden;
   color: vars.$dark;
   font-family: 'Tenor Sans', sans-serif;
@@ -239,11 +240,14 @@
 
 @media (min-width: 1024px) {
   .card-container {
-    --panel-gap: clamp(0.1rem, 2vh, 1.5rem);
-    --panel-content-max-height: clamp(2rem, 18vh, 13rem);
-    --sub-panel-content-max-height: clamp(2.5rem, 12vh, 9rem);
+    --panel-gap: clamp(0.5rem, 3vh, 1.5rem);
+    --responsive-padding: clamp(1rem, 5vh, 3rem);
     width: 90vw;
-    max-height: calc(100% - 2rem);
+    max-height: 100%;
+    padding-top: var(--responsive-padding);
+    padding-bottom: var(--responsive-padding);
+    padding-left: var(--responsive-padding);
+    padding-right: var(--responsive-padding);
     overflow: hidden;
   }
 
@@ -289,14 +293,14 @@
     }
 
     &-content {
-      padding: 1rem;
+      display: flex;
+      flex-direction: column;
       flex: 1;
       min-height: 0;
       overflow-y: auto;
       overflow-x: hidden;
 
       &.collapsed {
-        padding: 1rem;
         overflow-y: auto;
         overflow-x: hidden;
       }
@@ -304,12 +308,18 @@
   }
 
   .collapsible-panel-content-wrapper {
+    min-height: 0;
     overflow-y: auto;
     scrollbar-width: thin;
     scrollbar-color: rgba(0, 43, 33, 0.2) transparent;
   }
 
+  .sub-panel-content {
+    overflow-y: auto;
+  }
+
   .sub-panel-content-wrapper {
+    min-height: 0;
     overflow-y: auto;
     scrollbar-width: thin;
     scrollbar-color: rgba(0, 43, 33, 0.2) transparent;
