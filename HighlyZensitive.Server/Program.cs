@@ -26,6 +26,30 @@ builder.Services.AddLogging(loggingBuilder =>
 
 var app = builder.Build();
 
+// Validate required configuration at startup
+var logger = app.Services.GetRequiredService<ILogger<Program>>();
+var config = app.Services.GetRequiredService<IConfiguration>();
+
+var requiredConfig = new[]
+{
+    ("GoogleCalendar:ServiceAccountJson", false),  // false = don't log value, true = log value
+    ("GoogleCalendar:CalendarId", true),
+};
+
+foreach (var (key, shouldLogValue) in requiredConfig)
+{
+    var value = config[key];
+    if (string.IsNullOrEmpty(value))
+    {
+        logger.LogWarning("⚠️  {key} is not configured.", key);
+    }
+    else
+    {
+        var displayValue = shouldLogValue ? value : $"({value.Length} chars)";
+        logger.LogInformation("✓ {key} is configured: {value}", key, displayValue);
+    }
+}
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
