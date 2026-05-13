@@ -27,7 +27,7 @@ export interface TimeSlotViewModel {
   isSelectable: boolean;
 }
 
-export interface SchedulerViewModel {
+export interface VibeCheckViewModel {
   titleText: string;
   contentText: string;
   service: Service | null;
@@ -88,11 +88,11 @@ function isSlotSelectable(
 // View model selectors
 // ---------------------------------------------------------------------------
 
-export const selectSchedulerViewModel = createSelector(
+export const selectVibeCheckViewModel = createSelector(
   VibeCheckFeature.selectService,
   VibeCheckFeature.selectClientDetails,
   globalFeature.selectNotification,
-  (service, clientDetails, notification): SchedulerViewModel => ({
+  (service, clientDetails, notification): VibeCheckViewModel => ({
     titleText: 'Get a vibe check',
     contentText:
       "Let's chat!  It's already written in the stars that we would meet.  Pick your time and fulfill the prophesy.",

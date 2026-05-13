@@ -39,7 +39,7 @@ export interface TimeSlot {
   isBooked: boolean;
 }
 
-export interface AppointmentSchedulerState {
+export interface VibeCheckState {
   service: Service | null;
   clientDetails: ClientDetails | null;
   selectedDate: string | null;
@@ -50,7 +50,7 @@ export interface AppointmentSchedulerState {
   bookingStatus: { status: BookingStatus; errorMessage?: string } | null;
 }
 
-export const initialState: AppointmentSchedulerState = {
+export const initialState: VibeCheckState = {
   service: null,
   clientDetails: null,
   selectedDate: null,

@@ -1,7 +1,7 @@
 import { Routes } from '@angular/router';
 import { HomeComponent } from './pages/public/home/home.component';
 import { AboutComponent } from './pages/public/about/about.component';
-import { SchedulerComponent } from './pages/public/vibe-check/scheduler/scheduler.component';
+import { VibeCheckComponent } from './pages/public/vibe-check/vibe-check-parent/vibe-check.component';
 import { EventsComponent } from './pages/public/events/events.component';
 import { provideState } from '@ngrx/store';
 import { provideEffects } from '@ngrx/effects';
@@ -18,8 +18,8 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/public/newsletter-confirmed/newsletter-confirmed.component').then(m => m.NewsletterConfirmedComponent)
   },
   {
-    path: 'scheduler',
-    component: SchedulerComponent,
+    path: 'vibe-check',
+    component: VibeCheckComponent,
     providers: [
       provideState(VibeCheckFeature),
       provideEffects(VibeCheckEffects),
