@@ -58,7 +58,7 @@ jobs:
     runs-on: windows-latest
     needs: build
     environment:
-      name: 'Production'
+      name: 'Test'
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
     
     steps:
@@ -72,6 +72,6 @@ jobs:
         uses: azure/webapps-deploy@v3
         with:
           app-name: 'highlyzensitive'
-          slot-name: 'Production'
+          slot-name: 'Test'
           package: .
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_BCE89BA1A56149D59D3E7ECED320AA45 }}

@@ -50,7 +50,7 @@
             ]
           },
           "configurations": {
-            "production": {
+            "test": {
               "outputHashing": "all",
               "budgets": [
                 {
@@ -67,7 +67,7 @@
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.prod.ts"
+                  "with": "src/environments/environment.test.ts"
                 }
               ]
             },
@@ -77,13 +77,13 @@
               "sourceMap": true
             }
           },
-          "defaultConfiguration": "production"
+          "defaultConfiguration": "test"
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
-            "production": {
-              "buildTarget": "highlyzensitive.client:build:production"
+            "test": {
+              "buildTarget": "highlyzensitive.client:build:test"
             },
             "development": {
               "buildTarget": "highlyzensitive.client:build:development"

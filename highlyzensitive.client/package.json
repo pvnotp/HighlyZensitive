@@ -6,7 +6,7 @@
     "start": "npm run dev",
     "start:http": "ng serve --ssl false --host=localhost --open",
     "dev": "concurrently \"cd ../HighlyZensitive.Server && dotnet watch run\" \"npm run start:http\"",
-    "build": "ng build --output-hashing=none --configuration=production",
+    "build": "ng build --output-hashing=none --configuration=test",
     "build:local": "ng build --output-hashing=none --configuration=development",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",

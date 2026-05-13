@@ -9,9 +9,9 @@ namespace HighlyZensitive.Server.Services
         private string GetRedirectUri()
         {
             var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
-            if (string.Equals(env, "Production", StringComparison.OrdinalIgnoreCase))
+            if (string.Equals(env, "Test", StringComparison.OrdinalIgnoreCase))
             {
-                return "https://localhost:7295/auth/oauthtoken";
+                return "https://highlyzensitive-test.up.railway.app/auth/oauthtoken";
             }
             return "http://localhost:5287/auth/oauthtoken";
         }
