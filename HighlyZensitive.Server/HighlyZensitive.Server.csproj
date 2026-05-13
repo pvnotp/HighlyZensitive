@@ -34,7 +34,7 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
   </ItemGroup>
 
-  <ItemGroup>
+  <ItemGroup Condition="'$(SkipClientProjectReference)' != 'true'">
     <ProjectReference Include="..\highlyzensitive.client\highlyzensitive.client.esproj">
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>

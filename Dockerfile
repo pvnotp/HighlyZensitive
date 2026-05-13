@@ -16,7 +16,7 @@ COPY . .
 COPY --from=client-build /src/HighlyZensitive.Server/wwwroot ./HighlyZensitive.Server/wwwroot
 
 RUN dotnet restore HighlyZensitive.Server/HighlyZensitive.Server.csproj
-RUN dotnet publish HighlyZensitive.Server/HighlyZensitive.Server.csproj -c Release -o /app/publish /p:UseAppHost=false /p:BuildProjectReferences=false
+RUN dotnet publish HighlyZensitive.Server/HighlyZensitive.Server.csproj -c Release -o /app/publish /p:UseAppHost=false /p:BuildProjectReferences=false /p:SkipClientProjectReference=true
 
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
 WORKDIR /app
