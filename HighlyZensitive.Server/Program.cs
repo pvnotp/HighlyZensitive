@@ -41,7 +41,7 @@ foreach (var (key, shouldLogValue) in requiredConfig)
     var value = config[key];
     if (string.IsNullOrEmpty(value))
     {
-        logger.LogWarning("⚠️  {key} is not configured.", key);
+        logger.LogWarning("⚠️ {key} is not configured.", key);
     }
     else
     {
