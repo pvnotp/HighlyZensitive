@@ -1,0 +1,16 @@
+.git
+.gitignore
+.github
+.vs
+.vscode
+.jj
+
+**/bin
+**/obj
+**/node_modules
+
+.tmp
+
+*.user
+*.suo
+*.db
