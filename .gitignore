@@ -193,10 +193,10 @@ publish/
 PublishScripts/
 
 # Local publish output used for ad-hoc validation
-AlchemyCoaching.Server/publish-test/
+HighlyZensitive.Server/publish-test/
 
 # Local environment-specific app settings
-AlchemyCoaching.Server/appsettings.Development.json
+HighlyZensitive.Server/appsettings.Development.json
 
 # NuGet Packages
 *.nupkg
