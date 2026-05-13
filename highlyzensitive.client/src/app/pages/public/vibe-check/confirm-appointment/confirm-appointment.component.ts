@@ -4,9 +4,9 @@ import { FormsModule } from '@angular/forms';
 import { Actions, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { Subject, takeUntil } from 'rxjs';
-import { BookAppointmentActions } from '../store/book-appointment.actions';
-import { BookingStatus, DialogStatus } from '../store/book-appointment.state';
-import { selectConfirmDialogViewModel } from '../store/book-appointment.selectors';
+import { VibeCheckActions } from '../store/vibe-check.actions';
+import { BookingStatus, DialogStatus } from '../store/vibe-check.state';
+import { selectConfirmDialogViewModel } from '../store/vibe-check.selectors';
 
 @Component({
   selector: 'app-confirm-appointment',
@@ -28,7 +28,7 @@ export class ConfirmAppointmentComponent implements OnDestroy {
 
   constructor() {
     this.actions$
-      .pipe(ofType(BookAppointmentActions.submitAppointmentSuccess), takeUntil(this.destroy$))
+      .pipe(ofType(VibeCheckActions.submitAppointmentSuccess), takeUntil(this.destroy$))
       .subscribe(() => {
         this.note = '';
       });
@@ -39,11 +39,11 @@ export class ConfirmAppointmentComponent implements OnDestroy {
   }
 
   requestClose(): void {
-    this.store.dispatch(BookAppointmentActions.closeDialog());
+    this.store.dispatch(VibeCheckActions.closeDialog());
   }
 
   submitAppointment(): void {
-    this.store.dispatch(BookAppointmentActions.submitAppointment({ note: this.note.trim() }));
+    this.store.dispatch(VibeCheckActions.submitAppointment({ note: this.note.trim() }));
   }
 
   ngOnDestroy(): void {

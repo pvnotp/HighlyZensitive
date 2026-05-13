@@ -1,8 +1,8 @@
 import { createActionGroup, emptyProps, props } from '@ngrx/store';
-import { ClientDetails, Service, TimeSlot } from './book-appointment.state';
+import { ClientDetails, Service, TimeSlot } from './vibe-check.state';
 
-export const BookAppointmentActions = createActionGroup({
-  source: 'BookAppointment',
+export const VibeCheckActions = createActionGroup({
+  source: 'VibeCheck',
   events: {
     'Update Service': props<{ service: Service }>(),
     'Set Client Details': props<{ clientDetails: ClientDetails }>(),

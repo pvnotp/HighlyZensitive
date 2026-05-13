@@ -4,12 +4,11 @@ import {
   ClientDetails,
   DialogStatus,
   Service,
-  ServiceType,
   TimePickerStatus,
   TimeSlot,
-} from './book-appointment.state';
-import { BookAppointmentFeature } from './book-appointment.reducer';
-import { BookAppointmentUtils } from '../book-appointment-utils';
+} from './vibe-check.state';
+import { VibeCheckFeature } from './vibe-check.reducer';
+import { VibeCheckUtils } from '../vibe-check.utils';
 import { globalFeature } from '../../../../global/store/global.reducer';
 import { NotificationState } from '../../../../global/store/global.state';
 
@@ -90,26 +89,22 @@ function isSlotSelectable(
 // ---------------------------------------------------------------------------
 
 export const selectSchedulerViewModel = createSelector(
-  BookAppointmentFeature.selectService,
-  BookAppointmentFeature.selectClientDetails,
+  VibeCheckFeature.selectService,
+  VibeCheckFeature.selectClientDetails,
   globalFeature.selectNotification,
-  (service, clientDetails, notification): SchedulerViewModel => {
-    const isVibeCheck = service?.type === ServiceType.VibeCheck;
-    return {
-      titleText: isVibeCheck ? 'Get a vibe check' : 'Schedule a session',
-      contentText: isVibeCheck
-        ? "Let's chat!  It's already written in the stars that we would meet.  Pick your time and fulfill the prophesy."
-        : 'Choose a session type to see the scheduling details.',
-      service,
-      isPanelDisabled: clientDetails === null,
-      notification,
-    };
-  },
+  (service, clientDetails, notification): SchedulerViewModel => ({
+    titleText: 'Get a vibe check',
+    contentText:
+      "Let's chat!  It's already written in the stars that we would meet.  Pick your time and fulfill the prophesy.",
+    service,
+    isPanelDisabled: clientDetails === null,
+    notification,
+  }),
 );
 
 export const selectDatePickerViewModel = createSelector(
-  BookAppointmentFeature.selectSelectedDate,
-  BookAppointmentFeature.selectClientDetails,
+  VibeCheckFeature.selectSelectedDate,
+  VibeCheckFeature.selectClientDetails,
   (selectedDate, clientDetails): DatePickerViewModel => ({
     selectedDate: selectedDate ? new Date(selectedDate) : null,
     isPanelDisabled: clientDetails === null,
@@ -117,12 +112,12 @@ export const selectDatePickerViewModel = createSelector(
 );
 
 export const selectTimePickerViewModel = createSelector(
-  BookAppointmentFeature.selectTimes,
-  BookAppointmentFeature.selectSelectedTime,
-  BookAppointmentFeature.selectSelectedDate,
-  BookAppointmentFeature.selectClientDetails,
-  BookAppointmentFeature.selectTimePickerStatus,
-  BookAppointmentFeature.selectService,
+  VibeCheckFeature.selectTimes,
+  VibeCheckFeature.selectSelectedTime,
+  VibeCheckFeature.selectSelectedDate,
+  VibeCheckFeature.selectClientDetails,
+  VibeCheckFeature.selectTimePickerStatus,
+  VibeCheckFeature.selectService,
   (
     times,
     selectedTime,
@@ -143,7 +138,7 @@ export const selectTimePickerViewModel = createSelector(
 
     const enrichedTimes: TimeSlotViewModel[] = times.map((slot, index) => ({
       ...slot,
-      label: BookAppointmentUtils.formatTimeLabel(slot.hour, slot.minute),
+      label: VibeCheckUtils.formatTimeLabel(slot.hour, slot.minute),
       isHourMark: slot.minute === 0,
       isStart: index === startIndex,
       isInRange: startIndex !== -1 && index >= startIndex && index < startIndex + slotsNeeded,
@@ -161,12 +156,12 @@ export const selectTimePickerViewModel = createSelector(
 );
 
 export const selectConfirmDialogViewModel = createSelector(
-  BookAppointmentFeature.selectDialogStatus,
-  BookAppointmentFeature.selectBookingStatus,
-  BookAppointmentFeature.selectClientDetails,
-  BookAppointmentFeature.selectSelectedTime,
-  BookAppointmentFeature.selectSelectedDate,
-  BookAppointmentFeature.selectService,
+  VibeCheckFeature.selectDialogStatus,
+  VibeCheckFeature.selectBookingStatus,
+  VibeCheckFeature.selectClientDetails,
+  VibeCheckFeature.selectSelectedTime,
+  VibeCheckFeature.selectSelectedDate,
+  VibeCheckFeature.selectService,
   (
     dialogStatus,
     bookingStatus,
@@ -180,13 +175,13 @@ export const selectConfirmDialogViewModel = createSelector(
     let endTime = '';
     if (selectedTime && service) {
       const end = addMinutes(selectedTime.hour, selectedTime.minute, service.duration);
-      endTime = BookAppointmentUtils.formatTimeLabel(end.hour, end.minute);
+      endTime = VibeCheckUtils.formatTimeLabel(end.hour, end.minute);
     }
 
     let selectedDateText = '';
     if (selectedDateAsDate && selectedTime) {
-      const startLabel = BookAppointmentUtils.formatTimeLabel(selectedTime.hour, selectedTime.minute);
-      selectedDateText = BookAppointmentUtils.formatSelectedDateText(selectedDateAsDate, {
+      const startLabel = VibeCheckUtils.formatTimeLabel(selectedTime.hour, selectedTime.minute);
+      selectedDateText = VibeCheckUtils.formatSelectedDateText(selectedDateAsDate, {
         label: startLabel,
       });
     }

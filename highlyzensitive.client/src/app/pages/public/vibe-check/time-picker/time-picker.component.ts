@@ -1,9 +1,9 @@
 import { AsyncPipe } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { BookAppointmentActions } from '../store/book-appointment.actions';
-import { selectTimePickerViewModel, TimeSlotViewModel } from '../store/book-appointment.selectors';
-import { TimePickerStatus, TimeSlot } from '../store/book-appointment.state';
+import { VibeCheckActions } from '../store/vibe-check.actions';
+import { selectTimePickerViewModel, TimeSlotViewModel } from '../store/vibe-check.selectors';
+import { TimePickerStatus, TimeSlot } from '../store/vibe-check.state';
 
 @Component({
   selector: 'app-time-picker',
@@ -22,7 +22,7 @@ export class TimePickerComponent {
     if (isPanelDisabled || slot.isBooked || !slot.isSelectable) {
       return;
     }
-    this.store.dispatch(BookAppointmentActions.selectTime({ time: { hour: slot.hour, minute: slot.minute, isBooked: slot.isBooked } }));
+    this.store.dispatch(VibeCheckActions.selectTime({ time: { hour: slot.hour, minute: slot.minute, isBooked: slot.isBooked } }));
   }
 
   isStart(slot: TimeSlotViewModel, selectedStartTime: TimeSlot | null): boolean {
@@ -36,7 +36,7 @@ export class TimePickerComponent {
     if (isPanelDisabled || !selectedStartTime) {
       return;
     }
-    this.store.dispatch(BookAppointmentActions.openDialog());
+    this.store.dispatch(VibeCheckActions.openDialog());
   }
 }
 

@@ -5,10 +5,10 @@ import { catchError, exhaustMap, map, of, switchMap, withLatestFrom } from 'rxjs
 import { EmailService } from '../../../../services/email.service';
 import { CalendarEvent, CalendarService } from '../../../../services/calendar.service';
 import { GlobalActions } from '../../../../global/store/global.actions';
-import { BookAppointmentActions } from './book-appointment.actions';
-import { BookAppointmentFeature } from './book-appointment.reducer';
-import { END_HOUR, ServiceType, START_HOUR, TimeSlot } from './book-appointment.state';
-import { BookAppointmentUtils } from '../book-appointment-utils';
+import { VibeCheckActions } from './vibe-check.actions';
+import { VibeCheckFeature } from './vibe-check.reducer';
+import { END_HOUR, START_HOUR, TimeSlot } from './vibe-check.state';
+import { VibeCheckUtils } from '../vibe-check.utils';
 
 function buildTimeSlotsFromEvents(date: Date, events: CalendarEvent[]): TimeSlot[] {
   const slots: TimeSlot[] = [];
@@ -44,7 +44,7 @@ function buildTimeSlotsFromEvents(date: Date, events: CalendarEvent[]): TimeSlot
 }
 
 @Injectable()
-export class BookAppointmentEffects {
+export class VibeCheckEffects {
   private readonly actions$ = inject(Actions);
   private readonly store = inject(Store);
   private readonly calendarService = inject(CalendarService); 
@@ -52,15 +52,15 @@ export class BookAppointmentEffects {
   
   loadTimes$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(BookAppointmentActions.selectDate),
+      ofType(VibeCheckActions.selectDate),
       switchMap(({ date }) =>
         this.calendarService.getAvailabilityForDay(new Date(date)).pipe(
           map((events) =>
-            BookAppointmentActions.loadTimesSuccess({
+            VibeCheckActions.loadTimesSuccess({
               times: buildTimeSlotsFromEvents(new Date(date), events),
             }),
           ),
-          catchError(() => of(BookAppointmentActions.loadTimesFailure())),
+          catchError(() => of(VibeCheckActions.loadTimesFailure())),
         ),
       ),
     ),
@@ -68,17 +68,17 @@ export class BookAppointmentEffects {
 
   submitAppointment$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(BookAppointmentActions.submitAppointment),
+      ofType(VibeCheckActions.submitAppointment),
       withLatestFrom(
-        this.store.select(BookAppointmentFeature.selectClientDetails),
-        this.store.select(BookAppointmentFeature.selectSelectedTime),
-        this.store.select(BookAppointmentFeature.selectSelectedDate),
-        this.store.select(BookAppointmentFeature.selectService),
+        this.store.select(VibeCheckFeature.selectClientDetails),
+        this.store.select(VibeCheckFeature.selectSelectedTime),
+        this.store.select(VibeCheckFeature.selectSelectedDate),
+        this.store.select(VibeCheckFeature.selectService),
       ),
       exhaustMap(([{ note }, clientDetails, selectedTime, selectedDate, service]) => {
         if (!clientDetails || !selectedTime || !selectedDate || !service) {
           return of(
-            BookAppointmentActions.submitAppointmentFailure({
+            VibeCheckActions.submitAppointmentFailure({
               errorMessage: 'Missing booking information.',
             }),
           );
@@ -89,12 +89,9 @@ export class BookAppointmentEffects {
         const end = new Date(start);
         end.setMinutes(end.getMinutes() + service.duration);
 
-        const summaryPrefix =
-          service.type === ServiceType.VibeCheck ? 'Vibe Check' : 'Session';
-
         return this.calendarService
           .createEvent({
-            summary: `${summaryPrefix} with ${clientDetails.name}`,
+            summary: `Vibe Check with ${clientDetails.name}`,
             start: start.toISOString(),
             end: end.toISOString(),
             description: note
@@ -102,10 +99,10 @@ export class BookAppointmentEffects {
               : `Phone: ${clientDetails.phone}`,
           })
           .pipe(
-            map(() => BookAppointmentActions.submitAppointmentSuccess()),
+            map(() => VibeCheckActions.submitAppointmentSuccess()),
             catchError(() =>
               of(
-                BookAppointmentActions.submitAppointmentFailure({
+                VibeCheckActions.submitAppointmentFailure({
                   errorMessage: 'Could not confirm the appointment. Please try again.',
                 }),
               ),
@@ -117,33 +114,33 @@ export class BookAppointmentEffects {
 
   notifyUserAfterBookingSuccess$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(BookAppointmentActions.submitAppointmentSuccess),
+      ofType(VibeCheckActions.submitAppointmentSuccess),
       map(() => GlobalActions.notifyUser({ message: 'Your appointment has been confirmed!', duration: 3500, variant: 'success' })),
     ),
   );
 
   notifyUserAfterBookingFailure$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(BookAppointmentActions.submitAppointmentFailure),
+      ofType(VibeCheckActions.submitAppointmentFailure),
       map(({ errorMessage }) => GlobalActions.notifyUser({ message: errorMessage, duration: 4000, variant: 'warn' })),
     ),
   );
 
   sendConfirmationEmail$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(BookAppointmentActions.submitAppointmentSuccess),
+      ofType(VibeCheckActions.submitAppointmentSuccess),
       withLatestFrom(
-        this.store.select(BookAppointmentFeature.selectClientDetails), 
-        this.store.select(BookAppointmentFeature.selectSelectedDate), 
-        this.store.select(BookAppointmentFeature.selectSelectedTime)),
+        this.store.select(VibeCheckFeature.selectClientDetails), 
+        this.store.select(VibeCheckFeature.selectSelectedDate), 
+        this.store.select(VibeCheckFeature.selectSelectedTime)),
       exhaustMap(([, clientDetails, appointmentDate, appointmentTime]) => {
-        if (!clientDetails?.email) return of(BookAppointmentActions.confirmationEmailComplete());
+        if (!clientDetails?.email) return of(VibeCheckActions.confirmationEmailComplete());
         let body = "";
         if (!appointmentDate || !appointmentTime) {
           body = `You\'re scheduled for a fifteen minute call with Samantha.`;
         } else {
-          const startLabel = BookAppointmentUtils.formatTimeLabel(appointmentTime!.hour, appointmentTime!.minute);
-          const formattedDate = BookAppointmentUtils.formatSelectedDateText(new Date(appointmentDate!), { label: startLabel });
+          const startLabel = VibeCheckUtils.formatTimeLabel(appointmentTime!.hour, appointmentTime!.minute);
+          const formattedDate = VibeCheckUtils.formatSelectedDateText(new Date(appointmentDate!), { label: startLabel });
           body = `You\'re scheduled for a fifteen minute call with Samantha on ${formattedDate}.`;
         }
 
@@ -154,7 +151,7 @@ export class BookAppointmentEffects {
           body: body + " I look forward to connecting with you! If you have any questions ahead of time feel free to reply to this email.",
         }).pipe(
           catchError(() => of(null)),
-          map(() => BookAppointmentActions.confirmationEmailComplete())
+          map(() => VibeCheckActions.confirmationEmailComplete())
         );
       })
     )
@@ -162,12 +159,12 @@ export class BookAppointmentEffects {
 
   reloadTimesAfterBooking$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(BookAppointmentActions.confirmationEmailComplete),
-      withLatestFrom(this.store.select(BookAppointmentFeature.selectSelectedDate)),
+      ofType(VibeCheckActions.confirmationEmailComplete),
+      withLatestFrom(this.store.select(VibeCheckFeature.selectSelectedDate)),
       map(([, selectedDate]) =>
         selectedDate
-          ? BookAppointmentActions.selectDate({ date: selectedDate })
-          : BookAppointmentActions.loadTimesFailure(),
+          ? VibeCheckActions.selectDate({ date: selectedDate })
+          : VibeCheckActions.loadTimesFailure(),
       ),
     ),
   );

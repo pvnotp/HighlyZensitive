@@ -1,8 +1,8 @@
 import { Component, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
-import { BookAppointmentActions } from '../store/book-appointment.actions';
-import { BookAppointmentFeature } from '../store/book-appointment.reducer';
+import { VibeCheckActions } from '../store/vibe-check.actions';
+import { VibeCheckFeature } from '../store/vibe-check.reducer';
 
 @Component({
   selector: 'app-client-details',
@@ -15,7 +15,7 @@ export class ClientDetailsComponent {
   private readonly store = inject(Store);
   private readonly formBuilder = inject(FormBuilder);
 
-  readonly clientDetails = this.store.selectSignal(BookAppointmentFeature.selectClientDetails);
+  readonly clientDetails = this.store.selectSignal(VibeCheckFeature.selectClientDetails);
 
   readonly form = this.formBuilder.group({
     name: [this.clientDetails()?.name ?? '', [Validators.required]],
@@ -33,12 +33,12 @@ export class ClientDetailsComponent {
 
     if (this.form.valid && trimmedName) {
       this.store.dispatch(
-        BookAppointmentActions.setClientDetails({
+        VibeCheckActions.setClientDetails({
           clientDetails: { name: trimmedName, email: trimmedEmail, phone: trimmedPhone },
         }),
       );
     } else {
-      this.store.dispatch(BookAppointmentActions.clearDetails());
+      this.store.dispatch(VibeCheckActions.clearDetails());
     }
   }
 

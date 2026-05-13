@@ -1,21 +1,21 @@
 import { createFeature, createReducer, on } from '@ngrx/store';
-import { BookAppointmentActions as BookAppointmentActions } from './book-appointment.actions';
-import { BookingStatus, DialogStatus, initialState, TimePickerStatus } from './book-appointment.state';
+import { VibeCheckActions as VibeCheckActions } from './vibe-check.actions';
+import { BookingStatus, DialogStatus, initialState, TimePickerStatus } from './vibe-check.state';
 
 const reducer = createReducer(
   initialState,
 
-  on(BookAppointmentActions.updateService, (state, { service }) => ({
+  on(VibeCheckActions.updateService, (state, { service }) => ({
     ...state,
     service,
   })),
 
-  on(BookAppointmentActions.setClientDetails, (state, { clientDetails }) => ({
+  on(VibeCheckActions.setClientDetails, (state, { clientDetails }) => ({
     ...state,
     clientDetails,
   })),
 
-  on(BookAppointmentActions.clearDetails, (state) => ({
+  on(VibeCheckActions.clearDetails, (state) => ({
     ...state,
     clientDetails: null,
     selectedTime: null,
@@ -23,25 +23,25 @@ const reducer = createReducer(
     bookingStatus: null,
   })),
 
-  on(BookAppointmentActions.selectDate, (state, { date }) => ({
+  on(VibeCheckActions.selectDate, (state, { date }) => ({
     ...state,
     selectedDate: date,
     selectedTime: null,
     timePickerStatus: { status: TimePickerStatus.Loading },
   })),
 
-  on(BookAppointmentActions.selectTime, (state, { time }) => ({
+  on(VibeCheckActions.selectTime, (state, { time }) => ({
     ...state,
     selectedTime: time,
   })),
 
-  on(BookAppointmentActions.loadTimesSuccess, (state, { times }) => ({
+  on(VibeCheckActions.loadTimesSuccess, (state, { times }) => ({
     ...state,
     times,
     timePickerStatus: { status: TimePickerStatus.Loaded },
   })),
 
-  on(BookAppointmentActions.loadTimesFailure, (state) => ({
+  on(VibeCheckActions.loadTimesFailure, (state) => ({
     ...state,
     timePickerStatus: {
       status: TimePickerStatus.Error,
@@ -49,43 +49,43 @@ const reducer = createReducer(
     },
   })),
 
-  on(BookAppointmentActions.openDialog, (state) => ({
+  on(VibeCheckActions.openDialog, (state) => ({
     ...state,
     dialogStatus: DialogStatus.Open,
     bookingStatus: null,
   })),
 
-  on(BookAppointmentActions.closeDialog, (state) => ({
+  on(VibeCheckActions.closeDialog, (state) => ({
     ...state,
     dialogStatus: DialogStatus.Closed,
     selectedTime: null,
     bookingStatus: null,
   })),
 
-  on(BookAppointmentActions.submitAppointment, (state) => ({
+  on(VibeCheckActions.submitAppointment, (state) => ({
     ...state,
     bookingStatus: { status: BookingStatus.Submitting },
   })),
 
-  on(BookAppointmentActions.submitAppointmentSuccess, (state) => ({
+  on(VibeCheckActions.submitAppointmentSuccess, (state) => ({
     ...state,
     dialogStatus: DialogStatus.Closed,
     bookingStatus: { status: BookingStatus.Submitted },
   })),
 
-  on(BookAppointmentActions.submitAppointmentFailure, (state, { errorMessage }) => ({
+  on(VibeCheckActions.submitAppointmentFailure, (state, { errorMessage }) => ({
     ...state,
     dialogStatus: DialogStatus.Closed,
     bookingStatus: { status: BookingStatus.Error, errorMessage },
   })),
 
-  on(BookAppointmentActions.confirmationEmailComplete, (state) => ({
+  on(VibeCheckActions.confirmationEmailComplete, (state) => ({
     ...state,
     selectedTime: null
   })),
 );
 
-export const BookAppointmentFeature = createFeature({
-  name: 'bookAppointment',
+export const VibeCheckFeature = createFeature({
+  name: 'VibeCheck',
   reducer,
 });

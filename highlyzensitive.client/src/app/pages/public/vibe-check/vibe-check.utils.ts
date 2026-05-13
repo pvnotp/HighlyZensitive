@@ -2,7 +2,7 @@ interface TimeSlotLabel {
   label: string;
 }
 
-export class BookAppointmentUtils {
+export class VibeCheckUtils {
   static readonly appointmentDateFormatter = new Intl.DateTimeFormat('en-US', {
     weekday: 'long',
     month: 'long',
@@ -14,7 +14,7 @@ export class BookAppointmentUtils {
       return '';
     }
 
-    return `${BookAppointmentUtils.appointmentDateFormatter.format(selectedDate)} at ${selectedSlot.label}`;
+    return `${VibeCheckUtils.appointmentDateFormatter.format(selectedDate)} at ${selectedSlot.label}`;
   }
 
   static formatTimeLabel(hour: number, minute: number): string {
