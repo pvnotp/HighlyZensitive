@@ -2,11 +2,12 @@ import { Component, HostListener, OnInit, inject, signal } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { PLATFORM_ID } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { AttributionComponent } from '../../../global/attribution/attribution.component';
 
 @Component({
   selector: 'app-services',
   standalone: true,
-  imports: [RouterLink],
+  imports: [RouterLink, AttributionComponent],
   templateUrl: './services.component.html',
   styleUrl: './services.component.scss'
 })

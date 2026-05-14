@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { CalendarService, CalendarEvent } from '../../../services/calendar.service';
 import { DatePipe, NgFor, NgIf } from '@angular/common';
+import { AttributionComponent } from '../../../global/attribution/attribution.component';
 
 @Component({
   selector: 'app-events',
   standalone: true,
-  imports: [DatePipe],
+  imports: [DatePipe, AttributionComponent],
   templateUrl: './events.component.html',
   styleUrl: './events.component.scss'
 })

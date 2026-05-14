@@ -7,11 +7,12 @@ import { DatePickerComponent } from '../date-picker/date-picker.component';
 import { TimePickerComponent } from '../time-picker/time-picker.component';
 import { VibeCheckActions } from '../store/vibe-check.actions';
 import { selectVibeCheckViewModel } from '../store/vibe-check.selectors';
+import { AttributionComponent } from '../../../../global/attribution/attribution.component';
 
 @Component({
   selector: 'app-vibe-check',
   standalone: true,
-  imports: [AsyncPipe, DatePickerComponent, TimePickerComponent, ConfirmAppointmentComponent, ClientDetailsComponent],
+  imports: [AsyncPipe, DatePickerComponent, TimePickerComponent, ConfirmAppointmentComponent, ClientDetailsComponent, AttributionComponent],
   templateUrl: './vibe-check.component.html',
   styleUrls: ['./vibe-check.component.scss']
 })
