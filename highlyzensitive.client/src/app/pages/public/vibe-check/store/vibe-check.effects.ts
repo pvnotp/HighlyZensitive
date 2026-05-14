@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
-import { catchError, exhaustMap, forkJoin, map, of, switchMap, withLatestFrom } from 'rxjs';
+import { catchError, exhaustMap, forkJoin, map, of, withLatestFrom } from 'rxjs';
 import { EmailService } from '../../../../services/email.service';
 import { Calendar, CalendarEvent, CalendarService } from '../../../../services/calendar.service';
 import { GlobalActions } from '../../../../global/store/global.actions';
@@ -9,6 +9,48 @@ import { VibeCheckActions } from './vibe-check.actions';
 import { VibeCheckFeature } from './vibe-check.reducer';
 import { END_HOUR, START_HOUR, TimeSlot, VIBE_CHECK_DURATION_MINUTES } from './vibe-check.state';
 import { VibeCheckUtils } from '../vibe-check.utils';
+
+const AVAILABILITY_PRELOAD_DAYS = 42;
+
+function atMidnight(date: Date): Date {
+  const copy = new Date(date);
+  copy.setHours(0, 0, 0, 0);
+  return copy;
+}
+
+function startOfWeek(date: Date): Date {
+  const copy = atMidnight(date);
+  copy.setDate(copy.getDate() - copy.getDay());
+  return copy;
+}
+
+function addDays(date: Date, days: number): Date {
+  const copy = new Date(date);
+  copy.setDate(copy.getDate() + days);
+  return copy;
+}
+
+function getDateKey(date: Date): string {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
+function buildTimesByDate(
+  rangeStart: Date,
+  numberOfDays: number,
+  events: CalendarEvent[],
+): Record<string, TimeSlot[]> {
+  const timesByDate: Record<string, TimeSlot[]> = {};
+
+  for (let offset = 0; offset < numberOfDays; offset++) {
+    const date = addDays(rangeStart, offset);
+    timesByDate[getDateKey(date)] = buildTimeSlotsFromEvents(date, events);
+  }
+
+  return timesByDate;
+}
 
 function buildTimeSlotsFromEvents(date: Date, events: CalendarEvent[]): TimeSlot[] {
   const slots: TimeSlot[] = [];
@@ -50,22 +92,36 @@ export class VibeCheckEffects {
   private readonly calendarService = inject(CalendarService); 
   private readonly emailService = inject(EmailService);
   
-  loadTimes$ = createEffect(() =>
+  loadAvailability$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(VibeCheckActions.selectDate),
-      switchMap(({ date }) => {
-        const selectedDate = new Date(date);
+      ofType(VibeCheckActions.loadAvailability),
+      exhaustMap(() => {
+        const rangeStart = startOfWeek(new Date());
+        const rangeEnd = addDays(rangeStart, AVAILABILITY_PRELOAD_DAYS - 1);
+        rangeEnd.setHours(23, 59, 59, 999);
 
         return forkJoin({
-          appointmentEvents: this.calendarService.getCalendarForDay(Calendar.Appointments, selectedDate),
-          eventCalendarEvents: this.calendarService.getCalendarForDay(Calendar.Events, selectedDate),
+          appointmentEvents: this.calendarService.getCalendarForRange(
+            Calendar.Appointments,
+            rangeStart,
+            rangeEnd,
+          ),
+          eventCalendarEvents: this.calendarService.getCalendarForRange(
+            Calendar.Events,
+            rangeStart,
+            rangeEnd,
+          ),
         }).pipe(
           map(({ appointmentEvents, eventCalendarEvents }) =>
-            VibeCheckActions.loadTimesSuccess({
-              times: buildTimeSlotsFromEvents(selectedDate, [...appointmentEvents, ...eventCalendarEvents]),
+            VibeCheckActions.loadAvailabilitySuccess({
+              timesByDate: buildTimesByDate(
+                rangeStart,
+                AVAILABILITY_PRELOAD_DAYS,
+                [...appointmentEvents, ...eventCalendarEvents],
+              ),
             }),
           ),
-          catchError(() => of(VibeCheckActions.loadTimesFailure())),
+          catchError(() => of(VibeCheckActions.loadAvailabilityFailure())),
         );
       }),
     ),
@@ -164,12 +220,7 @@ export class VibeCheckEffects {
   reloadTimesAfterBooking$ = createEffect(() =>
     this.actions$.pipe(
       ofType(VibeCheckActions.confirmationEmailComplete),
-      withLatestFrom(this.store.select(VibeCheckFeature.selectSelectedDate)),
-      map(([, selectedDate]) =>
-        selectedDate
-          ? VibeCheckActions.selectDate({ date: selectedDate })
-          : VibeCheckActions.loadTimesFailure(),
-      ),
+      map(() => VibeCheckActions.loadAvailability()),
     ),
   );
 

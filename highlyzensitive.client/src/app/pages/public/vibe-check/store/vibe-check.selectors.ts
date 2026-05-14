@@ -81,6 +81,13 @@ function isSlotSelectable(
   return true;
 }
 
+function getDateKey(date: Date): string {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
 // ---------------------------------------------------------------------------
 // View model selectors
 // ---------------------------------------------------------------------------
@@ -104,18 +111,22 @@ export const selectDatePickerViewModel = createSelector(
 );
 
 export const selectTimePickerViewModel = createSelector(
-  VibeCheckFeature.selectTimes,
+  VibeCheckFeature.selectTimesByDate,
   VibeCheckFeature.selectSelectedTime,
   VibeCheckFeature.selectSelectedDate,
   VibeCheckFeature.selectClientDetails,
   VibeCheckFeature.selectTimePickerStatus,
   (
-    times,
+    timesByDate,
     selectedTime,
     selectedDate,
     clientDetails,
     timePickerStatus,
   ): TimePickerViewModel => {
+    const selectedDateAsDate = selectedDate ? new Date(selectedDate) : null;
+    const selectedDateKey = selectedDateAsDate ? getDateKey(selectedDateAsDate) : null;
+    const times = selectedDateKey ? (timesByDate[selectedDateKey] ?? []) : [];
+
     const durationMinutes = VIBE_CHECK_DURATION_MINUTES;
     const slotsNeeded = Math.max(1, Math.floor(durationMinutes / 15));
 
@@ -140,7 +151,7 @@ export const selectTimePickerViewModel = createSelector(
       selectedStartTime: selectedTime,
       timePickerStatus,
       isPanelDisabled: clientDetails === null,
-      selectedDate: selectedDate ? new Date(selectedDate) : null,
+      selectedDate: selectedDateAsDate,
     };
   },
 );

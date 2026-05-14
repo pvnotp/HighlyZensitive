@@ -30,13 +30,7 @@ export enum Calendar {
 export class CalendarService {
   private readonly http = inject(HttpClient);
 
-  getCalendarForDay(calendar: Calendar, date: Date): Observable<CalendarEvent[]> {
-    const from = new Date(date);
-    from.setHours(0, 0, 0, 0);
-
-    const to = new Date(date);
-    to.setHours(23, 59, 59, 999);
-
+  getCalendarForRange(calendar: Calendar, from: Date, to: Date): Observable<CalendarEvent[]> {
     return this.http.get<CalendarEvent[]>('/calendar/events', {
       params: {
         calendar: calendar,
@@ -44,6 +38,16 @@ export class CalendarService {
         to: to.toISOString()
       }
     });
+  }
+
+  getCalendarForDay(calendar: Calendar, date: Date): Observable<CalendarEvent[]> {
+    const from = new Date(date);
+    from.setHours(0, 0, 0, 0);
+
+    const to = new Date(date);
+    to.setHours(23, 59, 59, 999);
+
+    return this.getCalendarForRange(calendar, from, to);
   }
 
   getUpcomingEvents(): Observable<CalendarEvent[]> {

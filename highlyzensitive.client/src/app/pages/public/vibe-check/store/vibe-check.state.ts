@@ -35,7 +35,7 @@ export interface VibeCheckState {
   clientDetails: ClientDetails | null;
   selectedDate: string | null;
   selectedTime: TimeSlot | null;
-  times: TimeSlot[];
+  timesByDate: Record<string, TimeSlot[]>;
   timePickerStatus: { status: TimePickerStatus; errorMessage?: string } | null;
   dialogStatus: DialogStatus;
   bookingStatus: { status: BookingStatus; errorMessage?: string } | null;
@@ -45,7 +45,7 @@ export const initialState: VibeCheckState = {
   clientDetails: null,
   selectedDate: null,
   selectedTime: null,
-  times: [],
+  timesByDate: {},
   timePickerStatus: null,
   dialogStatus: DialogStatus.Closed,
   bookingStatus: null,

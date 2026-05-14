@@ -5,6 +5,11 @@ import { BookingStatus, DialogStatus, initialState, TimePickerStatus } from './v
 const reducer = createReducer(
   initialState,
 
+  on(VibeCheckActions.loadAvailability, (state) => ({
+    ...state,
+    timePickerStatus: { status: TimePickerStatus.Loading },
+  })),
+
   on(VibeCheckActions.setClientDetails, (state, { clientDetails }) => ({
     ...state,
     clientDetails,
@@ -22,7 +27,6 @@ const reducer = createReducer(
     ...state,
     selectedDate: date,
     selectedTime: null,
-    timePickerStatus: { status: TimePickerStatus.Loading },
   })),
 
   on(VibeCheckActions.selectTime, (state, { time }) => ({
@@ -30,13 +34,13 @@ const reducer = createReducer(
     selectedTime: time,
   })),
 
-  on(VibeCheckActions.loadTimesSuccess, (state, { times }) => ({
+  on(VibeCheckActions.loadAvailabilitySuccess, (state, { timesByDate }) => ({
     ...state,
-    times,
+    timesByDate,
     timePickerStatus: { status: TimePickerStatus.Loaded },
   })),
 
-  on(VibeCheckActions.loadTimesFailure, (state) => ({
+  on(VibeCheckActions.loadAvailabilityFailure, (state) => ({
     ...state,
     timePickerStatus: {
       status: TimePickerStatus.Error,

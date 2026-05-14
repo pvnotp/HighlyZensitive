@@ -4,12 +4,13 @@ import { ClientDetails, TimeSlot } from './vibe-check.state';
 export const VibeCheckActions = createActionGroup({
   source: 'VibeCheck',
   events: {
+    'Load Availability': emptyProps(),
     'Set Client Details': props<{ clientDetails: ClientDetails }>(),
     'Clear Details': emptyProps(),
     'Select Date': props<{ date: string }>(),
     'Select Time': props<{ time: TimeSlot }>(),
-    'Load Times Success': props<{ times: TimeSlot[] }>(),
-    'Load Times Failure': emptyProps(),
+    'Load Availability Success': props<{ timesByDate: Record<string, TimeSlot[]> }>(),
+    'Load Availability Failure': emptyProps(),
     'Open Dialog': emptyProps(),
     'Close Dialog': emptyProps(),
     'Submit Appointment': props<{ note: string }>(),
