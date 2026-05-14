@@ -1,4 +1,5 @@
-import { Component, OnDestroy, OnInit, inject } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { Component, OnDestroy, OnInit, PLATFORM_ID, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { NewsletterService } from '../../services/newsletter-service';
 
@@ -13,6 +14,7 @@ export class NewsletterDialogComponent implements OnInit, OnDestroy {
   private static readonly appearedStorageKey = 'newsletterDialog.hasAppeared';
 
   private readonly newsletterService = inject(NewsletterService);
+  private readonly platformId = inject(PLATFORM_ID);
   private showTimer: ReturnType<typeof setTimeout> | null = null;
   private successDismissTimer: ReturnType<typeof setTimeout> | null = null;
 
@@ -25,6 +27,10 @@ export class NewsletterDialogComponent implements OnInit, OnDestroy {
   email = '';
 
   ngOnInit(): void {
+    if (!isPlatformBrowser(this.platformId)) {
+      return;
+    }
+
     if (this.hasAppearedInPreviousSession()) {
       this.hasDismissedWithoutSignup = true;
       return;
