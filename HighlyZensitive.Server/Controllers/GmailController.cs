@@ -1,6 +1,5 @@
 using HighlyZensitive.Server.Services;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
 
 namespace HighlyZensitive.Server.Controllers
 {
@@ -9,7 +8,6 @@ namespace HighlyZensitive.Server.Controllers
     public class GmailController(GmailService gmailService, GmailOAuthService gmailOAuthService) : ControllerBase
     {
 
-        // GET: auth/oauthtoken
         [HttpGet("oauthtoken")]
         public async Task<IActionResult> GetOAuthToken([FromQuery] string code)
         {

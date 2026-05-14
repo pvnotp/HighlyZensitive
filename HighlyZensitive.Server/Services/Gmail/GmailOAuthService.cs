@@ -8,12 +8,14 @@ namespace HighlyZensitive.Server.Services
     {
         private string GetRedirectUri()
         {
-            var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
-            if (string.Equals(env, "Test", StringComparison.OrdinalIgnoreCase))
+            var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Local";
+            return env.ToLower() switch
             {
-                return "https://highlyzensitive-test.up.railway.app/auth/oauthtoken";
-            }
-            return "http://localhost:5287/auth/oauthtoken";
+                "local" => "http://localhost:5000/gmail/oauthtoken",
+                "dev" => "https://highlyzensitive-dev.up.railway.app/gmail/oauthtoken",
+                "test" => "https://highlyzensitive-test.up.railway.app/gmail/oauthtoken",
+                _ => "http://localhost:5000/gmail/oauthtoken"
+            };
         }
 
         public async Task<(TokenResponse? token, string errorJson)> ExchangeCodeForTokensAsync(string code)
@@ -23,6 +25,7 @@ namespace HighlyZensitive.Server.Services
             var httpClient = httpClientFactory.CreateClient();
 
             var redirectUri = GetRedirectUri();
+            Console.WriteLine($"Redirect URI: {redirectUri}");
 
             var request = new HttpRequestMessage(HttpMethod.Post, "https://oauth2.googleapis.com/token")
             {
