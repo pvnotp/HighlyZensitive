@@ -19,12 +19,12 @@ namespace HighlyZensitive.Server.Controllers
             return Ok(tokens);
         }
 
-        public record SendEmailRequest(string From, string To, string Subject, string Body);
+        public record SendEmailRequest(string To, string Subject, string Body);
 
         [HttpPost("sendEmail")]
         public async Task<IActionResult> SendEmail([FromBody] SendEmailRequest request)
         {
-            var success = await gmailService.SendEmailAsync(request.From, request.To, request.Subject, request.Body);
+            var success = await gmailService.SendEmailAsync(request.To, request.Subject, request.Body);
             if (success)
                 return Ok();
             return BadRequest();

@@ -7,7 +7,8 @@ namespace HighlyZensitive.Server.Services
 {
     public class GmailService(GmailOAuthService gmailOAuthService, IHttpClientFactory httpClientFactory)
     {
-        public async Task<bool> SendEmailAsync(string from, string to, string subject, string body)
+
+        public async Task<bool> SendEmailAsync(string to, string subject, string body)
         {
             // Get access token from GmailOAuthService
             var accessToken = await gmailOAuthService.GetAccessTokenAsync();
@@ -15,7 +16,7 @@ namespace HighlyZensitive.Server.Services
                 return false;
 
             // Build raw email message (RFC 2822)
-            var rawMessage = $"From: {from}\r\nTo: {to}\r\nSubject: {subject}\r\nContent-Type: text/html; charset=utf-8\r\n\r\n{body}";
+            var rawMessage = $"To: {to}\r\nSubject: {subject}\r\nContent-Type: text/html; charset=utf-8\r\n\r\n{body}";
             var base64Message = System.Convert.ToBase64String(Encoding.UTF8.GetBytes(rawMessage))
                 .Replace("+", "-").Replace("/", "_").Replace("=", ""); // URL-safe base64
 

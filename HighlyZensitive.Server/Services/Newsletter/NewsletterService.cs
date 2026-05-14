@@ -18,7 +18,6 @@ namespace HighlyZensitive.Server.Services
             }   
             var emailBody = NewsletterEmailTemplate.GetEmailBody(email, siteUrl);
             var success = await gmailService.SendEmailAsync(
-                from: "alisonjoyforster@gmail.com",
                 to: email,
                 subject: "The Path to Purpose",
                 body: emailBody

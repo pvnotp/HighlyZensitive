@@ -196,19 +196,14 @@ export class VibeCheckEffects {
       exhaustMap(([, clientDetails, appointmentDate, appointmentTime]) => {
         if (!clientDetails?.email) return of(VibeCheckActions.confirmationEmailComplete());
         let body = "";
-        if (!appointmentDate || !appointmentTime) {
-          body = `You\'re scheduled for a fifteen minute call with Samantha.`;
-        } else {
-          const startLabel = VibeCheckUtils.formatTimeLabel(appointmentTime!.hour, appointmentTime!.minute);
-          const formattedDate = VibeCheckUtils.formatSelectedDateText(new Date(appointmentDate!), { label: startLabel });
-          body = `You\'re scheduled for a fifteen minute call with Samantha on ${formattedDate}.`;
-        }
-
+        const startLabel = VibeCheckUtils.formatTimeLabel(appointmentTime!.hour, appointmentTime!.minute);
+        const formattedDate = VibeCheckUtils.formatSelectedDateText(new Date(appointmentDate!), { label: startLabel });
+        body = `You\'re scheduled for a fifteen minute call with Samantha on ${formattedDate}.   
+          I look forward to connecting with you! If you have any questions ahead of time feel free to reply to this email.`;
         return this.emailService.sendEmail({
-          from: 'alisonjoyforster@gmail.com',
           to: clientDetails.email,
           subject: 'Thank you for booking your appointment!',
-          body: body + " I look forward to connecting with you! If you have any questions ahead of time feel free to reply to this email.",
+          body: body
         }).pipe(
           catchError(() => of(null)),
           map(() => VibeCheckActions.confirmationEmailComplete())
