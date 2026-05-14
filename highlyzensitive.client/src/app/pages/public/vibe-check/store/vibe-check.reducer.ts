@@ -5,11 +5,6 @@ import { BookingStatus, DialogStatus, initialState, TimePickerStatus } from './v
 const reducer = createReducer(
   initialState,
 
-  on(VibeCheckActions.updateService, (state, { service }) => ({
-    ...state,
-    service,
-  })),
-
   on(VibeCheckActions.setClientDetails, (state, { clientDetails }) => ({
     ...state,
     clientDetails,

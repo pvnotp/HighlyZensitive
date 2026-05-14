@@ -1,9 +1,9 @@
 import { createSelector } from '@ngrx/store';
 import {
+  VIBE_CHECK_DURATION_MINUTES,
   BookingStatus,
   ClientDetails,
   DialogStatus,
-  Service,
   TimePickerStatus,
   TimeSlot,
 } from './vibe-check.state';
@@ -28,9 +28,6 @@ export interface TimeSlotViewModel {
 }
 
 export interface VibeCheckViewModel {
-  titleText: string;
-  contentText: string;
-  service: Service | null;
   isPanelDisabled: boolean;
   notification: NotificationState;
 }
@@ -89,14 +86,9 @@ function isSlotSelectable(
 // ---------------------------------------------------------------------------
 
 export const selectVibeCheckViewModel = createSelector(
-  VibeCheckFeature.selectService,
   VibeCheckFeature.selectClientDetails,
   globalFeature.selectNotification,
-  (service, clientDetails, notification): VibeCheckViewModel => ({
-    titleText: 'Get a vibe check',
-    contentText:
-      "Let's chat!  It's already written in the stars that we would meet.  Pick your time and fulfill the prophesy.",
-    service,
+  (clientDetails, notification): VibeCheckViewModel => ({
     isPanelDisabled: clientDetails === null,
     notification,
   }),
@@ -117,16 +109,14 @@ export const selectTimePickerViewModel = createSelector(
   VibeCheckFeature.selectSelectedDate,
   VibeCheckFeature.selectClientDetails,
   VibeCheckFeature.selectTimePickerStatus,
-  VibeCheckFeature.selectService,
   (
     times,
     selectedTime,
     selectedDate,
     clientDetails,
     timePickerStatus,
-    service,
   ): TimePickerViewModel => {
-    const durationMinutes = service?.duration ?? 15;
+    const durationMinutes = VIBE_CHECK_DURATION_MINUTES;
     const slotsNeeded = Math.max(1, Math.floor(durationMinutes / 15));
 
     const startIndex =
@@ -161,20 +151,22 @@ export const selectConfirmDialogViewModel = createSelector(
   VibeCheckFeature.selectClientDetails,
   VibeCheckFeature.selectSelectedTime,
   VibeCheckFeature.selectSelectedDate,
-  VibeCheckFeature.selectService,
   (
     dialogStatus,
     bookingStatus,
     clientDetails,
     selectedTime,
     selectedDate,
-    service,
   ): ConfirmDialogViewModel => {
     const selectedDateAsDate = selectedDate ? new Date(selectedDate) : null;
 
     let endTime = '';
-    if (selectedTime && service) {
-      const end = addMinutes(selectedTime.hour, selectedTime.minute, service.duration);
+    if (selectedTime) {
+      const end = addMinutes(
+        selectedTime.hour,
+        selectedTime.minute,
+        VIBE_CHECK_DURATION_MINUTES,
+      );
       endTime = VibeCheckUtils.formatTimeLabel(end.hour, end.minute);
     }
 

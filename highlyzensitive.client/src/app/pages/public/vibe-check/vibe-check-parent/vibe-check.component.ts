@@ -6,7 +6,6 @@ import { ClientDetailsComponent } from '../client-details/client-details.compone
 import { DatePickerComponent } from '../date-picker/date-picker.component';
 import { TimePickerComponent } from '../time-picker/time-picker.component';
 import { VibeCheckActions } from '../store/vibe-check.actions';
-import { ServiceType } from '../store/vibe-check.state';
 import { selectVibeCheckViewModel } from '../store/vibe-check.selectors';
 
 @Component({
@@ -26,9 +25,5 @@ export class VibeCheckComponent implements OnInit {
     tomorrow.setHours(0, 0, 0, 0);
     tomorrow.setDate(tomorrow.getDate() + 1);
     this.store.dispatch(VibeCheckActions.selectDate({ date: tomorrow.toISOString() }));
-
-    this.store.dispatch(
-      VibeCheckActions.updateService({ service: { type: ServiceType.VibeCheck, duration: 15 } }),
-    );
   }
 }

@@ -1,9 +1,6 @@
 export const START_HOUR = 11;
 export const END_HOUR = 21;
-
-export enum ServiceType {
-  VibeCheck = 'vibe-check',
-}
+export const VIBE_CHECK_DURATION_MINUTES = 15;
 
 export enum TimePickerStatus {
   Loading = 'Loading',
@@ -22,11 +19,6 @@ export enum BookingStatus {
   Error = 'Error',
 }
 
-export interface Service {
-  type: ServiceType;
-  duration: number; // minutes
-}
-
 export interface ClientDetails {
   name: string;
   email: string;
@@ -40,7 +32,6 @@ export interface TimeSlot {
 }
 
 export interface VibeCheckState {
-  service: Service | null;
   clientDetails: ClientDetails | null;
   selectedDate: string | null;
   selectedTime: TimeSlot | null;
@@ -51,7 +42,6 @@ export interface VibeCheckState {
 }
 
 export const initialState: VibeCheckState = {
-  service: null,
   clientDetails: null,
   selectedDate: null,
   selectedTime: null,

@@ -7,7 +7,7 @@ import { CalendarEvent, CalendarService } from '../../../../services/calendar.se
 import { GlobalActions } from '../../../../global/store/global.actions';
 import { VibeCheckActions } from './vibe-check.actions';
 import { VibeCheckFeature } from './vibe-check.reducer';
-import { END_HOUR, START_HOUR, TimeSlot } from './vibe-check.state';
+import { END_HOUR, START_HOUR, TimeSlot, VIBE_CHECK_DURATION_MINUTES } from './vibe-check.state';
 import { VibeCheckUtils } from '../vibe-check.utils';
 
 function buildTimeSlotsFromEvents(date: Date, events: CalendarEvent[]): TimeSlot[] {
@@ -73,10 +73,9 @@ export class VibeCheckEffects {
         this.store.select(VibeCheckFeature.selectClientDetails),
         this.store.select(VibeCheckFeature.selectSelectedTime),
         this.store.select(VibeCheckFeature.selectSelectedDate),
-        this.store.select(VibeCheckFeature.selectService),
       ),
-      exhaustMap(([{ note }, clientDetails, selectedTime, selectedDate, service]) => {
-        if (!clientDetails || !selectedTime || !selectedDate || !service) {
+      exhaustMap(([{ note }, clientDetails, selectedTime, selectedDate]) => {
+        if (!clientDetails || !selectedTime || !selectedDate) {
           return of(
             VibeCheckActions.submitAppointmentFailure({
               errorMessage: 'Missing booking information.',
@@ -87,7 +86,7 @@ export class VibeCheckEffects {
         const start = new Date(selectedDate);
         start.setHours(selectedTime.hour, selectedTime.minute, 0, 0);
         const end = new Date(start);
-        end.setMinutes(end.getMinutes() + service.duration);
+        end.setMinutes(end.getMinutes() + VIBE_CHECK_DURATION_MINUTES);
 
         return this.calendarService
           .createEvent({
