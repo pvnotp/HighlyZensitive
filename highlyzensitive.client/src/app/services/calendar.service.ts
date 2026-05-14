@@ -22,7 +22,7 @@ export interface CreateCalendarEventRequest {
 }
 
 export enum Calendar {
-  Availability,
+  Appointments,
   Events
 }
 
@@ -30,7 +30,7 @@ export enum Calendar {
 export class CalendarService {
   private readonly http = inject(HttpClient);
 
-  getAvailabilityForDay(date: Date): Observable<CalendarEvent[]> {
+  getCalendarForDay(calendar: Calendar, date: Date): Observable<CalendarEvent[]> {
     const from = new Date(date);
     from.setHours(0, 0, 0, 0);
 
@@ -39,7 +39,7 @@ export class CalendarService {
 
     return this.http.get<CalendarEvent[]>('/calendar/events', {
       params: {
-        calendar: Calendar.Availability,
+        calendar: calendar,
         from: from.toISOString(),
         to: to.toISOString()
       }

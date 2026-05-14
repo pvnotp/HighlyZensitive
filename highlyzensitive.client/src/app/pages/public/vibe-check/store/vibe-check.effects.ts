@@ -1,9 +1,9 @@
 import { inject, Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
-import { catchError, exhaustMap, map, of, switchMap, withLatestFrom } from 'rxjs';
+import { catchError, exhaustMap, forkJoin, map, of, switchMap, withLatestFrom } from 'rxjs';
 import { EmailService } from '../../../../services/email.service';
-import { CalendarEvent, CalendarService } from '../../../../services/calendar.service';
+import { Calendar, CalendarEvent, CalendarService } from '../../../../services/calendar.service';
 import { GlobalActions } from '../../../../global/store/global.actions';
 import { VibeCheckActions } from './vibe-check.actions';
 import { VibeCheckFeature } from './vibe-check.reducer';
@@ -53,16 +53,21 @@ export class VibeCheckEffects {
   loadTimes$ = createEffect(() =>
     this.actions$.pipe(
       ofType(VibeCheckActions.selectDate),
-      switchMap(({ date }) =>
-        this.calendarService.getAvailabilityForDay(new Date(date)).pipe(
-          map((events) =>
+      switchMap(({ date }) => {
+        const selectedDate = new Date(date);
+
+        return forkJoin({
+          appointmentEvents: this.calendarService.getCalendarForDay(Calendar.Appointments, selectedDate),
+          eventCalendarEvents: this.calendarService.getCalendarForDay(Calendar.Events, selectedDate),
+        }).pipe(
+          map(({ appointmentEvents, eventCalendarEvents }) =>
             VibeCheckActions.loadTimesSuccess({
-              times: buildTimeSlotsFromEvents(new Date(date), events),
+              times: buildTimeSlotsFromEvents(selectedDate, [...appointmentEvents, ...eventCalendarEvents]),
             }),
           ),
           catchError(() => of(VibeCheckActions.loadTimesFailure())),
-        ),
-      ),
+        );
+      }),
     ),
   );
 
