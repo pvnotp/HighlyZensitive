@@ -6,6 +6,13 @@ using HighlyZensitive.Server.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// User secrets are loaded automatically in Development, but Local is a custom environment.
+if (builder.Environment.IsDevelopment() ||
+    string.Equals(builder.Environment.EnvironmentName, "Local", StringComparison.OrdinalIgnoreCase))
+{
+    builder.Configuration.AddUserSecrets<Program>(optional: true);
+}
+
 // Add services to the container.
 
 builder.Services.AddControllers();
@@ -36,6 +43,9 @@ var requiredConfig = new[]
     ("GoogleCalendar:ServiceAccountJson", false),  // false = don't log value, true = log value
     ("GoogleCalendar:AppointmentCalendarId", true),
     ("GoogleCalendar:EventCalendarId", true),
+    ("Gmail:ClientId", true),
+    ("Gmail:ClientSecret", false),
+    ("Gmail:RefreshToken", false),
 };
 
 foreach (var (key, shouldLogValue) in requiredConfig)

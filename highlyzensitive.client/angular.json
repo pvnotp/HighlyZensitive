@@ -55,57 +55,19 @@
             ]
           },
           "configurations": {
-            "test": {
-              "optimization": {
-                "scripts": true,
-                "styles": {
-                  "minify": true,
-                  "inlineCritical": false
-                },
-                "fonts": true
-              },
-              "outputHashing": "all",
-              "budgets": [
-                {
-                  "type": "initial",
-                  "maximumWarning": "500kB",
-                  "maximumError": "1MB"
-                },
-                {
-                  "type": "anyComponentStyle",
-                  "maximumWarning": "4kB",
-                  "maximumError": "8kB"
-                }
-              ],
-              "fileReplacements": [
-                {
-                  "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.test.ts"
-                }
-              ]
-            },
             "development": {
               "optimization": false,
               "extractLicenses": false,
               "sourceMap": true
             }
-          },
-          "defaultConfiguration": "test"
+          }
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
-          "configurations": {
-            "test": {
-              "buildTarget": "highlyzensitive.client:build:test"
-            },
-            "development": {
-              "buildTarget": "highlyzensitive.client:build:development"
-            }
-          },
-          "defaultConfiguration": "development",
           "options": {
             "proxyConfig": "src/proxy.conf.js",
-            "port": 4200
+            "port": 4200,
+            "buildTarget": "highlyzensitive.client:build"
           }
         },
         "extract-i18n": {
