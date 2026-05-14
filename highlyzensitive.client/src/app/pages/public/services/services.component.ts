@@ -1,4 +1,6 @@
-import { Component, HostListener, OnInit, signal } from '@angular/core';
+import { Component, HostListener, OnInit, inject, signal } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { PLATFORM_ID } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
 @Component({
@@ -24,6 +26,7 @@ export class ServicesComponent implements OnInit {
   shortDesktop = signal(false);
   private readonly SHORT_HEIGHT = 700;
   private readonly DESKTOP_WIDTH = 1024;
+  private readonly platformId = inject(PLATFORM_ID);
 
   ngOnInit(): void {
     this.checkViewport();
@@ -31,6 +34,10 @@ export class ServicesComponent implements OnInit {
 
   @HostListener('window:resize')
   checkViewport(): void {
+    if (!isPlatformBrowser(this.platformId)) {
+      return;
+    }
+
     const wasShortDesktop = this.shortDesktop();
     const isShortDesktop = window.innerWidth >= this.DESKTOP_WIDTH && window.innerHeight < this.SHORT_HEIGHT;
     this.shortDesktop.set(isShortDesktop);

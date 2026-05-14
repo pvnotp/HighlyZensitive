@@ -1,5 +1,6 @@
 
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.FileProviders;
 using HighlyZensitive.Server.Services;
 
 
@@ -60,7 +61,24 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseCors(x => x.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
 
-app.UseDefaultFiles();
+var browserDistPath = Path.Combine(app.Environment.WebRootPath!, "browser");
+var browserDistExists = Directory.Exists(browserDistPath);
+
+if (browserDistExists)
+{
+    var browserFileProvider = new PhysicalFileProvider(browserDistPath);
+
+    app.UseDefaultFiles(new DefaultFilesOptions
+    {
+        FileProvider = browserFileProvider
+    });
+
+    app.UseStaticFiles(new StaticFileOptions
+    {
+        FileProvider = browserFileProvider
+    });
+}
+
 app.UseStaticFiles();
 
 app.UseAuthentication();
@@ -68,6 +86,16 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.MapFallbackToFile("/index.html");
+if (browserDistExists)
+{
+    app.MapFallbackToFile("/index.html", new StaticFileOptions
+    {
+        FileProvider = new PhysicalFileProvider(browserDistPath)
+    });
+}
+else
+{
+    app.MapFallbackToFile("/index.html");
+}
 
 app.Run();
