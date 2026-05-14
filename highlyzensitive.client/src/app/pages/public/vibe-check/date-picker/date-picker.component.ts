@@ -36,7 +36,7 @@ export class DatePickerComponent {
   }
 
   selectDate(date: Date, isPanelDisabled: boolean): void {
-    if (isPanelDisabled) {
+    if (isPanelDisabled || this.isDateInPast(date)) {
       return;
     }
     const midnight = this.atMidnight(date);
@@ -50,6 +50,10 @@ export class DatePickerComponent {
 
   isOutsideCurrentMonth(date: Date): boolean {
     return date.getMonth() !== this.today.getMonth();
+  }
+
+  isDateInPast(date: Date): boolean {
+    return this.atMidnight(date).getTime() < this.today.getTime();
   }
 
   private startOfWeek(date: Date): Date {
