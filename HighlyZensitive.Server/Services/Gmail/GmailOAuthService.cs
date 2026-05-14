@@ -8,7 +8,7 @@ namespace HighlyZensitive.Server.Services
     {
         private string GetRedirectUri()
         {
-            var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Local";
+            var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "local";
             return env.ToLower() switch
             {
                 "local" => "http://localhost:5000/gmail/oauthtoken",
