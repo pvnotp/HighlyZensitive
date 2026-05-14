@@ -1,5 +1,5 @@
 import { AsyncPipe, DatePipe } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { VibeCheckActions } from '../store/vibe-check.actions';
 import { selectDatePickerViewModel } from '../store/vibe-check.selectors';
@@ -11,7 +11,7 @@ import { selectDatePickerViewModel } from '../store/vibe-check.selectors';
   templateUrl: './date-picker.component.html',
   styleUrl: './date-picker.component.scss'
 })
-export class DatePickerComponent {
+export class DatePickerComponent implements OnInit {
   private readonly store = inject(Store);
 
   readonly weekdayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
@@ -19,6 +19,12 @@ export class DatePickerComponent {
   readonly weeks = this.buildNextSixWeeks();
 
   readonly vm$ = this.store.select(selectDatePickerViewModel);
+
+  ngOnInit(): void {
+    const tomorrow = this.atMidnight(new Date());
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    this.store.dispatch(VibeCheckActions.selectDate({ date: tomorrow.toISOString() }));
+  }
 
   private buildNextSixWeeks(): Date[][] {
     const start = this.startOfWeek(this.today);
