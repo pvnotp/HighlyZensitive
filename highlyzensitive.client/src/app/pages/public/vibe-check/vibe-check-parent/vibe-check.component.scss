@@ -22,6 +22,8 @@
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
+  contain: layout;
+  will-change: background-image;
 }
 
 .overlay-layer {
