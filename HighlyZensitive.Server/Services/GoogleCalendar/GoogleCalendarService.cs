@@ -90,10 +90,10 @@ namespace HighlyZensitive.Server.Services
         private string GetCalendarId(Calendar calendar){
             return calendar switch
             {
-                Calendar.Availability => configuration["GoogleCalendar:CalendarId"]
-                    ?? throw new InvalidOperationException("GoogleCalendar:CalendarId is not configured."),
-                Calendar.Events => configuration["GoogleCalendar:CalendarId"]
-                    ?? throw new InvalidOperationException("GoogleCalendar:CalendarId is not configured."),
+                Calendar.Appointments => configuration["GoogleCalendar:AppointmentCalendarId"]
+                    ?? throw new InvalidOperationException("GoogleCalendar:AppointmentCalendarId is not configured."),
+                Calendar.Events => configuration["GoogleCalendar:EventCalendarId"]
+                    ?? throw new InvalidOperationException("GoogleCalendar:EventCalendarId is not configured."),
                 _ => throw new ArgumentException("Invalid calendar specified.")
             };
         }

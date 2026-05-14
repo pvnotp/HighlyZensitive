@@ -8,7 +8,7 @@ namespace HighlyZensitive.Server.Services
 
     public enum Calendar
     {
-        Availability,
+        Appointments,
         Events
     }
 

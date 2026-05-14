@@ -196,7 +196,7 @@ PublishScripts/
 HighlyZensitive.Server/publish-test/
 
 # Local environment-specific app settings
-HighlyZensitive.Server/appsettings.Development.json
+HighlyZensitive.Server/appsettings.local.json
 
 # NuGet Packages
 *.nupkg

@@ -34,7 +34,8 @@ var config = app.Services.GetRequiredService<IConfiguration>();
 var requiredConfig = new[]
 {
     ("GoogleCalendar:ServiceAccountJson", false),  // false = don't log value, true = log value
-    ("GoogleCalendar:CalendarId", true),
+    ("GoogleCalendar:AppointmentCalendarId", true),
+    ("GoogleCalendar:EventCalendarId", true),
 };
 
 foreach (var (key, shouldLogValue) in requiredConfig)
@@ -42,12 +43,12 @@ foreach (var (key, shouldLogValue) in requiredConfig)
     var value = config[key];
     if (string.IsNullOrEmpty(value))
     {
-        logger.LogWarning("⚠️ {key} is not configured.", key);
+        logger.LogWarning("{key} is not configured.", key);
     }
     else
     {
         var displayValue = shouldLogValue ? value : $"({value.Length} chars)";
-        logger.LogInformation("✓ {key} is configured: {value}", key, displayValue);
+        logger.LogInformation("{key} is configured: {value}", key, displayValue);
     }
 }
 
