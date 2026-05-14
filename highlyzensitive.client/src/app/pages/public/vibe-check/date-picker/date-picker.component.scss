@@ -63,7 +63,7 @@
 	color: rgba(0, 43, 33, 0.5);
 }
 
-.day-cell.past-date {
+.day-cell.blocked {
 	background: repeating-linear-gradient(
 		90deg,
 		rgba(0, 43, 33, 0.08) 0px,
@@ -73,7 +73,7 @@
 	);
 }
 
-.day-cell.past-date .day-number {
+.day-cell.blocked .day-number {
 	opacity: 0.35;
 }
 

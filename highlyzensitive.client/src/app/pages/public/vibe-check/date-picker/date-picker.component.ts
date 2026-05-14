@@ -56,6 +56,10 @@ export class DatePickerComponent {
     return this.atMidnight(date).getTime() < this.today.getTime();
   }
 
+  isSunday(date: Date): boolean {
+    return date.getDay() === 0;
+  }
+
   private startOfWeek(date: Date): Date {
     const copy = new Date(date);
     copy.setDate(date.getDate() - date.getDay());

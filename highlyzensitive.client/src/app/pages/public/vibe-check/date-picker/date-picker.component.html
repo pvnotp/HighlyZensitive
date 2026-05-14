@@ -10,10 +10,10 @@
           <button
             class="day-cell default-font"
             type="button"
-            [disabled]="vm.isPanelDisabled || isDateInPast(day)"
+            [disabled]="vm.isPanelDisabled || isDateInPast(day) || isSunday(day)"
             [class.selected]="isSelected(day, vm.selectedDate)"
             [class.other-month]="isOutsideCurrentMonth(day)"
-            [class.past-date]="isDateInPast(day)"
+            [class.blocked]="isDateInPast(day) || isSunday(day)"
             [attr.aria-label]="day | date : 'fullDate'"
             [attr.aria-pressed]="isSelected(day, vm.selectedDate)"
             (click)="selectDate(day, vm.isPanelDisabled)">
