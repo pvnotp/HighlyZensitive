@@ -19,7 +19,7 @@ namespace HighlyZensitive.Server.Controllers
             return Ok(tokens);
         }
 
-        public record SendEmailRequest(string To, string Subject, string Body);
+        public record SendEmailRequest(string? To, string Subject, string Body);
 
         [HttpPost("sendEmail")]
         public async Task<IActionResult> SendEmail([FromBody] SendEmailRequest request)

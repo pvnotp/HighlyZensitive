@@ -186,25 +186,33 @@ export class VibeCheckEffects {
     ),
   );
 
-  sendConfirmationEmail$ = createEffect(() =>
+  sendEmailsAfterBooking$ = createEffect(() =>
     this.actions$.pipe(
       ofType(VibeCheckActions.submitAppointmentSuccess),
       withLatestFrom(
-        this.store.select(VibeCheckFeature.selectClientDetails), 
-        this.store.select(VibeCheckFeature.selectSelectedDate), 
-        this.store.select(VibeCheckFeature.selectSelectedTime)),
+        this.store.select(VibeCheckFeature.selectClientDetails),
+        this.store.select(VibeCheckFeature.selectSelectedDate),
+        this.store.select(VibeCheckFeature.selectSelectedTime)
+      ),
       exhaustMap(([, clientDetails, appointmentDate, appointmentTime]) => {
-        if (!clientDetails?.email) return of(VibeCheckActions.confirmationEmailComplete());
-        let body = "";
+        if (!clientDetails) return of(VibeCheckActions.confirmationEmailComplete());
+
         const startLabel = VibeCheckUtils.formatTimeLabel(appointmentTime!.hour, appointmentTime!.minute);
         const formattedDate = VibeCheckUtils.formatSelectedDateText(new Date(appointmentDate!), { label: startLabel });
-        body = `You\'re scheduled for a fifteen minute call with Samantha on ${formattedDate}.   
-          I look forward to connecting with you! If you have any questions ahead of time feel free to reply to this email.`;
-        return this.emailService.sendEmail({
+
+        const confirmationEmail = this.emailService.sendEmail({
           to: clientDetails.email,
           subject: 'Thank you for booking your appointment!',
-          body: body
-        }).pipe(
+          body: `You're scheduled for a fifteen minute call with Samantha on ${formattedDate}.   
+            I look forward to connecting with you! If you have any questions ahead of time feel free to reply to this email.`,
+        });
+
+        const notificationEmail = this.emailService.sendEmail({
+          subject: 'New Vibe Check Scheduled',
+          body: `Heads up, ${clientDetails.name} scheduled a vibe check with you on ${formattedDate}. Their phone number is ${clientDetails.phone}. The appointment should be on your calendar.`,
+        });
+
+        return forkJoin([confirmationEmail, notificationEmail]).pipe(
           catchError(() => of(null)),
           map(() => VibeCheckActions.confirmationEmailComplete())
         );

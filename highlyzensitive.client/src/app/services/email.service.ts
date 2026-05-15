@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 export interface SendEmailRequest {
-  to: string;
+  to?: string
   subject: string;
   body: string;
 }
