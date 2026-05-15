@@ -24,7 +24,8 @@
                 "enabled": true,
                 "args": "http://localhost:5000"
             },
-            "console": "internalConsole"
+            "console": "internalConsole",
+            "requireExactSource": false
         },
         {
             "type": "chrome",
