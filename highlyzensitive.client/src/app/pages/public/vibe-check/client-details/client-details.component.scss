@@ -116,10 +116,3 @@
   background: rgba(255, 255, 255, 0.8);
   caret-color: vars.$dark;
 }
-
-@media (max-width: 1000px) {
-  .details-card {
-    height: auto;
-    min-height: 18.75rem;
-  }
-}
